@@ -1,0 +1,7 @@
+README.rdoc
+Rakefile
+capistrano_colors.gemspec
+lib/capistrano_colors.rb
+lib/capistrano_colors/configuration.rb
+lib/capistrano_colors/logger.rb
+Manifest

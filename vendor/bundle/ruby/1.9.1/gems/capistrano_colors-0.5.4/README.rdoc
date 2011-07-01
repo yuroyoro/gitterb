@@ -1,0 +1,124 @@
+== DESCRIPTION
+
+The aim of capistrano_colors is to make the capistrano output more userfriendly.
+When capistrano_colors is included in your deploy.rb capistrano output gets nice and shiny colors.
+
+== INSTALLATION
+
+   sudo gem install capistrano_colors
+
+== USAGE
+
+=== Per project installation
+  
+  In config/deploy.rb
+
+   require 'capistrano_colors'
+
+
+=== System wide installation
+
+  Create/Modify you ~/.caprc with the following
+  
+  require 'capistrano_colors'
+  
+
+== Creating you own color matchers
+
+ Create a custom colormatcher with the colorize command.
+ colorize can be called with a hash of options or an array of hashes.
+  
+ The options hash should have the following fields.
+  
+ * :match     - A regular expression of the row to match.
+ * :color     - The color we want on the matching rows.
+ * :prio      - What prio should this rule have (higher = more prio)
+ * :attribute - Special effect (:underline, :reverse, :blink)
+ * :level     - Specify if this matcher should be bound to some of capistranos log levels (info,debug,...)
+
+=== match 
+ :match is a simple regular expression for the row that should be matched.
+
+=== color
+ :color can have the following values:
+
+ * :hide  (hides the row completely)
+ * :none
+ * :black
+ * :red
+ * :green
+ * :yellow
+ * :blue
+ * :magenta
+ * :cyan
+ * :white
+
+=== prio
+  :prio is a Integer defining the matchers prio.
+
+=== attribute
+ :attribute can have the following values:
+
+ * :bright
+ * :dim
+ * :underscore
+ * :blink
+ * :reverse
+ * :hidden
+
+== Example
+
+   require 'capistrano_colors'    
+
+   capistrano_color_matchers = [
+     { :match => /command finished/,       :color => :hide,      :prio => 10 },
+     { :match => /executing command/,      :color => :blue,      :prio => 10, :attribute => :underscore },
+     { :match => /^transaction: commit$/,  :color => :magenta,   :prio => 10, :attribute => :blink },
+     { :match => /git/,                    :color => :white,     :prio => 20, :attribute => :reverse },
+   ]
+
+   colorize( capistrano_color_matchers )
+   
+   
+== CHANGES
+
+v.0.5.0
+
+  - Total rewrite and that is why we have a big version bump ;)
+  - Moved modules/classes to separate files.
+  - Wrote a simple color-regexp-match-engine.
+  - Possible to make you own custom color-matchers.
+
+v.0.2.1 
+
+  - Bugfix for some err: messages that where not printed in red.
+  - Moved console colors to constants
+  - Simple cleanup 
+
+== AUTHOR
+
+Mathias Stjernström (http://pastbedti.me/)
+
+== LICENSE
+
+MIT License
+Copyright (c) 2007 - 2008
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sub-license, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
