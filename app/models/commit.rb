@@ -38,15 +38,17 @@ class Commit
     msg.join("\n")
   end
 
-  def to_node
+  def to_node(node_size = 100)
     { :id => short_id,
       :shape => "ELLIPSE",
       :color => "#F5F5F5",
       :borderColor => "#2D2D2D",
-      :size => 100,
+      :labelFontColor => "#2D2D2D",
+      :size => node_size,
       :fontsize => 20,
       :label => short_id,
       :anchor => "center",
+      :v_anchor => "middle",
       :tips => commit_log
     }
   end

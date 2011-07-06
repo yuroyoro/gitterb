@@ -9,29 +9,29 @@ $(function(){
   var visual_style = {
     "global": { 'tooltipDelay': 500 },
     'nodes': {
-      'shape':{ 'passthroughMapper': { 'attrName': "shape" } },
-      'color':{ 'passthroughMapper': { 'attrName': "color" } },
-      'borderColor':{ 'passthroughMapper': { 'attrName': "borderColor" } },
-      'borderWidth': 4,
-      'size':{ 'passthroughMapper': { 'attrName': "size" } },
-      'opacity':{ 'passthroughMapper': { 'attrName': "opacity" } },
-      'hoverGlowColor': "#FF3333",
-      'labelFontColor': "#2D2D2D",
-      'labelFontSize':{ 'passthroughMapper': { 'attrName': "fontsize" } },
-      'labelFontWeight': "bold",
-      'labelHorizontalAnchor':{ 'passthroughMapper': { 'attrName': "anchor" } },
-      'labelVerticalAnchor':"middle",
-      'tooltipText':{ 'passthroughMapper': { 'attrName': "tips" } },
-      'tooltipFontSize': 14,
-      'tooltipFontColor':"#2D2D2D",
-      'tooltipBackgroundColor':"#FFFFDD",
-      'tooltipBorderColor':"#666666"
+      'shape'                  : { 'passthroughMapper' : { 'attrName' : "shape" } },
+      'color'                  : { 'passthroughMapper' : { 'attrName' : "color" } },
+      'borderColor'            : { 'passthroughMapper' : { 'attrName' : "borderColor" } },
+      'borderWidth'            : 4,
+      'size'                   : { 'passthroughMapper' : { 'attrName' : "size" } },
+      'opacity'                : { 'passthroughMapper' : { 'attrName' : "opacity" } },
+      'hoverGlowColor'         : "#FF3333",
+      'labelFontColor'         : { 'passthroughMapper' : { 'attrName' : "labelFontColor" } },
+      'labelFontSize'          : { 'passthroughMapper' : { 'attrName' : "fontsize" } },
+      'labelFontWeight'        : "bold",
+      'labelHorizontalAnchor'  : { 'passthroughMapper' : { 'attrName' : "anchor" } },
+      'labelVerticalAnchor'    : { 'passthroughMapper' : { 'attrName' : "v_anchor" } },
+      'tooltipText'            : { 'passthroughMapper' : { 'attrName' : "tips" } },
+      'tooltipFontSize'        : 14,
+      'tooltipFontColor'       : "#2D2D2D",
+      'tooltipBackgroundColor' : "#EEEEFF",
+      'tooltipBorderColor'     : "#666666"
     },
     'edges': {
       'width': 6,
-      'directed':{ 'passthroughMapper': { 'attrName': "directed" } },
-      'style':{ 'passthroughMapper': { 'attrName': "style" } },
-      'opacity':{ 'passthroughMapper': { 'attrName': "opacity" } }
+      'directed' : { 'passthroughMapper' : { 'attrName' : "directed" } },
+      'style'    : { 'passthroughMapper' : { 'attrName' : "style" } },
+      'opacity'  : { 'passthroughMapper' : { 'attrName' : "opacity" } }
     }
   };
 
@@ -46,19 +46,23 @@ $(function(){
   $.getJSON("/tree.json?" + $('#branch_selection_form').serialize(),  function(json){
     var networ_json = {
       'dataSchema': {
-        'nodes': [ { 'name': "label",  'type': "string" },
-                 { 'name': "shape",  'type': "string" },
-                 { 'name': "size",   'type': "number" },
-                 { 'name': "color",  'type': "string" },
-                 { 'name': "borderColor",  'type': "string" },
-                 { 'name': "anchor", 'type': "string" },
-                 { 'name': "fontsize", 'type': "number" },
-                 { 'name': "tips" ,  'type': "string" },
-                 { 'name': "opacity",  'type': "number" }
+        'nodes': [
+          { 'name': "label"          , 'type': "string" } ,
+          { 'name': "shape"          , 'type': "string" } ,
+          { 'name': "size"           , 'type': "number" } ,
+          { 'name': "color"          , 'type': "string" } ,
+          { 'name': "borderColor"    , 'type': "string" } ,
+          { 'name': "labelFontColor" , 'type': "string" } ,
+          { 'name': "anchor"         , 'type': "string" } ,
+          { 'name': "v_anchor"       , 'type': "string" } ,
+          { 'name': "fontsize"       , 'type': "number" } ,
+          { 'name': "tips"           , 'type': "string" } ,
+          { 'name': "opacity"        , 'type': "number" }
         ],
-        'edges':[ { 'name': "directed", 'type': "boolean"},
-                { 'name': "style",    'type': "string" },
-                { 'name': "opacity",  'type': "number" }
+        'edges':[
+          { 'name': "directed" , 'type': "boolean"} ,
+          { 'name': "style"    , 'type': "string" } ,
+          { 'name': "opacity"  , 'type': "number" }
         ]
       },
       'data': json["data"]

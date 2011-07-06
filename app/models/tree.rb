@@ -55,6 +55,7 @@ class Tree
   def to_nodes_and_points(opts = {})
     node_size = opts[:node_size].try(&:to_i) || 100
     mergin = opts[:mergin].try(&:to_i) ||  50
+
     branches = repo.heads.select{|h| @commits_hash.keys.include?(h.commit.id)}
     branch_lane_count = 0
     start_commits = @commits.select{|c| c.parents.empty? }.map(&:id)
@@ -62,32 +63,53 @@ class Tree
     nodes = []
     points = []
 
-    @lanes.each_with_index do |lane,y|
-      branch_count = lane.commits.reject(&:nil?).map{|c| branches.select{|b| b.commit.id == c.id}.size }.max || 0
-      lane.commits.each_with_index do |c, x|
-        next unless c
+    # -------
 
-        point_y = y * (node_size + mergin) + (branch_lane_count * 40)
-        point_x = x * (node_size + mergin)
+    lanes = @lanes.reverse.map{|lane|
+      lane.commits.map{|c|
+        { :branches => branches.select{|b| b.commit.id == c.id},
+          :start    => start_commits.include?(c.id),
+          :divergence =>
+             (c.parents.empty? or c.parents.size > 1 or c.children.empty? or c.children.size > 1),
+          :node => c.to_node(node_size)
+        } if c
+      }
+    }
 
-        branches.select{|b| b.commit.id == c.id}.each_with_index{|b,i|
+    width = @lanes.map{|lane| lane.commits.size}.max
+    lane_heights = [0] + lanes.map{|l|
+      (node_size + mergin + 10) + ((l.map{|e| (e and e[:brances].try(:size)) or 0 }.max ) * 100)
+    }
+
+    point_x = 0
+    (0..width).each{|x|
+      elems = lanes.map{|l| l[x]}
+      narrow = (not elems.reject(&:nil?).any?{|e| e[:branches].present? or e[:start] or e[:divergence]})
+
+      w = narrow ? node_size / 2 : node_size
+      point_x += node_size / 2 unless narrow
+
+      elems.each_with_index{|e,y|
+        next unless e
+        point_y = lane_heights[0..y].sum
+
+        e[:branches].each_with_index{|b,i|
           branch_node = branch_to_node(b)
-          branch_y = point_y - ((i + 1) * 100)
+          branch_y = point_y - ((i + 1) * 85)
           branch_x = point_x
           nodes << branch_node
           points << {:id => branch_node[:id], :x => branch_x, :y => branch_y }
         }
+        node = e[:node]
 
-        node = c.to_node
-        nodes << node
-        points << {:id => c.short_id, :x => point_x, :y => point_y }
-
-        if start_commits.include?(c.id)
-          s_id = "s_#{c.short_id}"
+        if e[:start]
+          s_id = "s_#{node[:id]}"
           nodes << { :id => s_id,
             :shape => "RECTANGLE",
             :color => "#FFFFFF",
+            :labelFontColor => "#2D2D2D",
             :anchor => "right",
+            :v_anchor => "middle",
             :borderColor => "#FFFFFF",
             :size => 30,
             :fontsize => 30,
@@ -95,9 +117,62 @@ class Tree
 
           points <<  {:id => s_id, :x => point_x - 150, :y => point_y }
         end
-      end
-      branch_lane_count += branch_count
-    end
+
+        node[:color] = "#DDFFFF" if e[:divergence] or e[:start]
+        node[:color] = "#FFDDDD" if e[:branches].present?
+
+        unless e[:branches].present? or e[:start] or e[:divergence]
+          node[:size] = node_size / 2
+          node[:v_anchor] = "top"
+        end
+
+        nodes << node
+        points << {:id => node[:id], :x => point_x, :y => point_y }
+      }
+
+      point_x += (w + mergin)
+    }
+
+    # -------
+
+    # @lanes.reverse.each_with_index do |lane,y|
+      # branch_count = lane.commits.reject(&:nil?).map{|c| branches.select{|b| b.commit.id == c.id}.size }.max || 0
+      # lane.commits.each_with_index do |c, x|
+        # next unless c
+
+        # point_y = y * (node_size + mergin) + (branch_lane_count * 40)
+        # point_x = x * (node_size + mergin)
+
+        # branches.select{|b| b.commit.id == c.id}.each_with_index{|b,i|
+          # branch_node = branch_to_node(b)
+          # branch_y = point_y - ((i + 1) * 100)
+          # branch_x = point_x
+          # nodes << branch_node
+          # points << {:id => branch_node[:id], :x => branch_x, :y => branch_y }
+        # }
+
+        # node = c.to_node
+        # nodes << node
+        # points << {:id => c.short_id, :x => point_x, :y => point_y }
+
+        # if start_commits.include?(c.id)
+          # s_id = "s_#{c.short_id}"
+          # nodes << { :id => s_id,
+            # :shape => "RECTANGLE",
+            # :color => "#FFFFFF",
+            # :labelFontColor => "#2D2D2D",
+            # :anchor => "right",
+            # :v_anchor => "middle",
+            # :borderColor => "#FFFFFF",
+            # :size => 30,
+            # :fontsize => 30,
+            # :label => "more commits..."}
+
+          # points <<  {:id => s_id, :x => point_x - 150, :y => point_y }
+        # end
+      # end
+      # branch_lane_count += branch_count
+    # end
 
     [nodes, points]
   end
@@ -171,9 +246,11 @@ class Tree
   def branch_to_node(b)
     { :id => b.name,
       :shape => "RECTANGLE",
-      :color => "#333333",
-      :borderColor => "#2D2D2D",
+      :color => "#FF3333",
+      :labelFontColor => "#FF3333",
+      :borderColor => "#FF3333",
       :anchor => "left",
+      :v_anchor => "middle",
       :size => 30,
       :fontsize => 30,
       :label => b.name }
