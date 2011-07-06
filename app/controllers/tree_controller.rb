@@ -2,9 +2,12 @@
 class TreeController < ApplicationController
 
   def index
-    path = REPOSITORY_PATH
     branch = params[:branch] || 'master'
-    tree = Tree.new(path, branch, {:brances => ['20110613m', 'ticket/id/1621', 'spike/apply_design']})
+    all = params[:all].nil? ? true : params[:all]
+    max_count = params[:max_count].try(:to_i) || 100
+    max_count = 100 unless max_count > 0
+
+    tree = Tree.new(repository_path, branch, :all => all, :max_count => max_count)
 
     res = {
       :target_branch => tree.target_branch_name,

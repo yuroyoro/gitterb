@@ -1,4 +1,9 @@
 $(function(){
+  $('select#branch').change(function(){
+    window.location = '/?' + $('#branch_selection_form').serialize();
+    return false;
+  });
+
   var div_id = "tree";
 
   var visual_style = {
@@ -38,8 +43,7 @@ $(function(){
       'flashInstallerPath': "/swf/playerProductInstall",
   };
 
-
-  $.getJSON("/tree.json",  function(json){
+  $.getJSON("/tree.json?" + $('#branch_selection_form').serialize(),  function(json){
     var networ_json = {
       'dataSchema': {
         'nodes': [ { 'name': "label",  'type': "string" },

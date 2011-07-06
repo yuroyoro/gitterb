@@ -10,7 +10,11 @@ class Tree
     @max_count = false if max_count < 0
     @target_branch_name  = target_branch_name
     @branch = branch_of(@target_branch_name)
-    @branches = (opts[:brances] || []).map{|b| branch_of(b)}
+    if opts[:all]
+      @branches = @repo.heads.reject{|h| h.name == @target_branch_name}
+    else
+      @branches = (opts[:brances] || []).map{|b| branch_of(b)}
+    end
 
     @commits = repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c) }.reverse
     @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}

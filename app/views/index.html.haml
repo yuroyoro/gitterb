@@ -1,6 +1,9 @@
 %div#header
   %span#title
     Gitterb
+  %span#branch_navi
+    branch:
+    = select_tag(:branch , options_from_collection_for_select(@branches, :to_s, :to_s, 'master'))
 
 %div#tree
   loading...
