@@ -1,1 +1,0 @@
-require_generators :mustache => ['scaffold', 'controller', 'install']

@@ -1,6 +1,6 @@
 Gitterb::Application.routes.draw do
   get "index/index"
-  resources :tree
+  resources :tree, :commit
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

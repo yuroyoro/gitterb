@@ -4,6 +4,7 @@ $(function(){
     return false;
   });
 
+
   var div_id = "tree";
 
   var visual_style = {
@@ -24,7 +25,7 @@ $(function(){
       'tooltipText'            : { 'passthroughMapper' : { 'attrName' : "tips" } },
       'tooltipFontSize'        : 14,
       'tooltipFontColor'       : "#2D2D2D",
-      'tooltipBackgroundColor' : "#EEEEFF",
+      'tooltipBackgroundColor' : "#EAF2F5",
       'tooltipBorderColor'     : "#666666"
     },
     'edges': {
@@ -47,6 +48,7 @@ $(function(){
     var networ_json = {
       'dataSchema': {
         'nodes': [
+          { 'name': "sha_1"          , 'type': "string" } ,
           { 'name': "label"          , 'type': "string" } ,
           { 'name': "shape"          , 'type': "string" } ,
           { 'name': "size"           , 'type': "number" } ,
@@ -90,6 +92,27 @@ $(function(){
       var target = vis.node(target_branch);
       vis.panBy( target.x * 0.95 , target.y * 0.7);
       vis.panEnabled(true);
+
+      vis.addListener("click", "nodes",  function(e){
+        var node = e.target;
+        var sha_1 = node.data.sha_1;
+        var detail = $('div#detail');
+        var x = e.mouseX;
+        if( x < ($('html').width() / 2 ) ){
+          detail.css('left', '50%');
+        }else{
+          detail.css('left', '0');
+        }
+        detail.load('/commit/' + sha_1, function(){
+          detail.show();
+          $('a#close').click(function(){
+            $('div#detail').hide();
+            return false;
+          });
+        });
+
+      });
+
     });
 
 

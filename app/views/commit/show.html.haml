@@ -1,0 +1,19 @@
+%div#detail_content
+  %div
+    %a#close{:href => '#'}
+      close
+  %div#detail_info
+    %pre= @commit.commit_log
+  %div#diffs
+    - @commit.diffs.each do |diff|
+      %hr
+      %div
+        = raw Commit.to_diff_html(diff)
+
+
+
+
+
+
+
+

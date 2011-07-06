@@ -1,9 +1,0 @@
-development:
-  app_id: YOUR APP ID
-secret: YOUR SECRET
-test:
-  app_id: YOUR APP ID
-secret: YOUR SECRET
-production:
-  app_id: YOUR APP ID
-secret: YOUR SECRET
