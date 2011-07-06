@@ -5,7 +5,9 @@ development:
   database: db/development.sqlite3
   pool: 5
   timeout: 5000
-  repository: '/Users/ozaki/project/scaleout/weborder'
+  # repository: '/Users/ozaki/project/scaleout/weborder'
+  repository: '/Users/ozaki/sandbox/ruby/rails'
+
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

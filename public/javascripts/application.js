@@ -1,9 +1,19 @@
 $(function(){
-  $('select#branch').change(function(){
+  var refresh = function(){
     window.location = '/?' + $('#branch_selection_form').serialize();
     return false;
-  });
+  };
 
+  $('select#branch').change(refresh);
+  $('input#all').change(refresh);
+  $('input#max_count').change(refresh);
+
+  var detail_close = function(){
+    $('div#detail').hide();
+    return false;
+  };
+
+  $("div#detail").dblclick(detail_close);
 
   var div_id = "tree";
 
@@ -88,7 +98,7 @@ $(function(){
     });
     vis.ready(function(){
       vis.zoom(0.5);
-      var target_branch = json["target_branch"] || 'master';
+      var target_branch = "b_" + json["target_branch"] || 'master';
       var target = vis.node(target_branch);
       vis.panBy( target.x * 0.95 , target.y * 0.7);
       vis.panEnabled(true);
@@ -105,10 +115,7 @@ $(function(){
         }
         detail.load('/commit/' + sha_1, function(){
           detail.show();
-          $('a#close').click(function(){
-            $('div#detail').hide();
-            return false;
-          });
+          $('a#close').click(detail_close);
         });
 
       });

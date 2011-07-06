@@ -57,17 +57,15 @@ class Tree
     mergin = opts[:mergin].try(&:to_i) ||  50
 
     branches = repo.heads.select{|h| @commits_hash.keys.include?(h.commit.id)}
-    branch_lane_count = 0
+    tags = repo.tags.select{|t| @commits_hash.keys.include?(t.commit.id)}
     start_commits = @commits.select{|c| c.parents.empty? }.map(&:id)
 
     nodes = []
     points = []
 
-    # -------
-
     lanes = @lanes.reverse.map{|lane|
       lane.commits.map{|c|
-        { :branches => branches.select{|b| b.commit.id == c.id},
+        { :refs=> branches.select{|b| b.commit.id == c.id} + tags.select{|t| t.commit.id == c.id},
           :start    => start_commits.include?(c.id),
           :divergence =>
              (c.parents.empty? or c.parents.size > 1 or c.children.empty? or c.children.size > 1),
@@ -78,13 +76,15 @@ class Tree
 
     width = @lanes.map{|lane| lane.commits.size}.max
     lane_heights = [0] + lanes.map{|l|
-      (node_size + mergin + 10) + ((l.map{|e| (e and e[:brances].try(:size)) or 0 }.max ) * 100)
+      (node_size + mergin + 10) + ((l.map{|e|
+        e ? [e[:brances].try(:size) || 0 , e[:tags].try(:size) || 0 ].max : 0
+      }.max) * 100)
     }
 
     point_x = 0
     (0..width).each{|x|
       elems = lanes.map{|l| l[x]}
-      narrow = (not elems.reject(&:nil?).any?{|e| e[:branches].present? or e[:start] or e[:divergence]})
+      narrow = (not elems.reject(&:nil?).any?{|e| e[:refs].present? or e[:start] or e[:divergence]})
 
       w = narrow ? node_size / 2 : node_size
       point_x += node_size / 2 unless narrow
@@ -93,13 +93,14 @@ class Tree
         next unless e
         point_y = lane_heights[0..y].sum
 
-        e[:branches].each_with_index{|b,i|
-          branch_node = branch_to_node(b)
-          branch_y = point_y - ((i + 1) * 85)
-          branch_x = point_x
-          nodes << branch_node
-          points << {:id => branch_node[:id], :x => branch_x, :y => branch_y }
+        e[:refs].each_with_index{|r,i|
+          refs_node = refs_to_node(r)
+          refs_y = point_y - ((i + 1) * 85)
+          refs_x = point_x
+          nodes << refs_node
+          points << {:id => refs_node[:id], :x => refs_x, :y => refs_y }
         }
+
         node = e[:node]
 
         if e[:start]
@@ -119,9 +120,9 @@ class Tree
         end
 
         node[:color] = "#DDFFFF" if e[:divergence] or e[:start]
-        node[:color] = "#FFDDDD" if e[:branches].present?
+        node[:color] = "#FFDDDD" if e[:refs].present?
 
-        unless e[:branches].present? or e[:start] or e[:divergence]
+        unless e[:refs].present? or e[:start] or e[:divergence]
           node[:size] = node_size / 2
           node[:v_anchor] = "top"
         end
@@ -139,13 +140,15 @@ class Tree
   def to_edges
     ids = @lanes.map(&:commits).flatten.reject(&:nil?).map(&:id)
     branches = repo.heads.select{|h| ids.include?(h.commit.id)}
+    tags = repo.tags.select{|t| ids.include?(t.commit.id)}
+    refs = branches + tags
     start_commits = @commits.select{|c| c.parents.empty? }
 
     all_commits = @lanes.map(&:commits).flatten.reject(&:nil?)
     all_commits_ids = all_commits.map(&:id)
     all_commits.map{|c|
       c.parents.select{|p| all_commits_ids.include?(p.id)}.map{|p| to_edge(c,p) }
-    }.flatten + branches.map{|b| branch_to_edge(b) } + start_commits.map{|c|
+    }.flatten + refs.map{|r| refs_to_edge(r) } + start_commits.map{|c|
       { :id => "s_#{c.short_id}_#{c.short_id}",
         :target => c.short_id, :source => "s_#{c.short_id}",
         :directed => false,
@@ -202,17 +205,28 @@ class Tree
     end
   end
 
-  def branch_to_node(b)
-    { :id => b.name,
+  def refs_to_node(r)
+    color = nil
+    ref_id = nil
+    case r
+    when Grit::Head
+      color = '#FF3333'
+      ref_id = "b_#{r.name}"
+    when Grit::Tag
+      color = '#3333FF'
+      ref_id = "t_#{r.name}"
+    end
+
+    { :id => ref_id,
       :shape => "RECTANGLE",
-      :color => "#FF3333",
-      :labelFontColor => "#FF3333",
-      :borderColor => "#FF3333",
+      :color => color,
+      :labelFontColor => color,
+      :borderColor => color,
       :anchor => "left",
       :v_anchor => "middle",
       :size => 30,
       :fontsize => 30,
-      :label => b.name }
+      :label => r.name }
   end
 
   def to_edge(src, dst)
@@ -222,9 +236,15 @@ class Tree
       :style => 'SOLID' }
   end
 
-  def branch_to_edge(b)
-    { :id => "#{b.name}_#{b.commit.id[0..7]}",
-      :target => b.name, :source => b.commit.id[0..7],
+  def refs_to_edge(r)
+    case r
+    when Grit::Head
+      ref_id = "b_#{r.name}"
+    when Grit::Tag
+      ref_id = "t_#{r.name}"
+    end
+    { :id => "#{ref_id}_#{r.commit.id[0..7]}",
+      :target => ref_id, :source => r.commit.id[0..7],
       :directed => false,
       :style => 'DOT'}
   end
