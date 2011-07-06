@@ -1,29 +1,30 @@
-== Gitterb
+Gitterb The Graphical Git Repository Viewer.
+===========================================================================
 
 The Graphical Git reporsitory Viewer Made by Ruby on Rails 3.0.9.
 
-== Setup
+## Setup
 
-1. Gitterb requires pygments. install it if you haven't.
+Gitterb requires pygments. install it if you haven't.
 
-  sudo easy_install pygments
+    sudo easy_install pygments
 
-2. Install dependencies gems using Bundler.
+Install dependencies gems using Bundler.
 
-  gem install bundler # if you haven't
-  bundle install ./vendor/bundle
+    gem install bundler # if you haven't
+    bundle install ./vendor/bundle
 
-3. edit config/database.yml and specify git reporsitory path(absolute path) .
+Edit config/database.yml and specify git reporsitory path(absolute path) .
 
-  development:
-    repository: '/home/your_name/your_repository'
+    development:
+      repository: '/home/your_name/your_repository'
 
-4. start server and visit 'http://localhsost:3000'
+start server and visit 'http://localhsost:3000'
 
-  script/rails server
+    script/rails server
 
 
-== License
+## License
 
 Copyright (c) 2011 Tomohito Ozaki(yuroyoro).
 
