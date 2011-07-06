@@ -5,8 +5,7 @@ development:
   database: db/development.sqlite3
   pool: 5
   timeout: 5000
-  # repository: '/Users/ozaki/project/scaleout/weborder'
-  repository: '/Users/ozaki/sandbox/ruby/rails'
+  repository: '/home/your_name/your_repository'
 
 
 # Warning: The database defined as "test" will be erased and
@@ -17,11 +16,11 @@ test:
   database: db/test.sqlite3
   pool: 5
   timeout: 5000
-  repository: '/Users/ozaki/project/scaleout/weborder'
+  repository: '/home/your_name/your_repository'
 
 production:
   adapter: sqlite3
   database: db/production.sqlite3
   pool: 5
   timeout: 5000
-  repository: '/Users/ozaki/project/scaleout/weborder'
+  repository: '/home/your_name/your_repository'
