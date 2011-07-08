@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def repository_path
-    ActiveRecord::Base.configurations[::Rails.env]['repository']
+    Gitterb::Application::REPOSITORY
   end
 
   def grit_repo
