@@ -41,6 +41,8 @@ class Tree
       parents.each{|p| p.add_child(c) }
     }
 
+    @root_commit = repo.git.log({:reverse => true, :pretty => '%H'},  '| head -1').chomp
+
     build
     @nodes, @points = to_nodes_and_points(opts)
     @edges = to_edges
@@ -58,7 +60,7 @@ class Tree
 
     branches = repo.heads.select{|h| @commits_hash.keys.include?(h.commit.id)}
     tags = repo.tags.select{|t| @commits_hash.keys.include?(t.commit.id)}
-    start_commits = @commits.select{|c| c.parents.empty? }.map(&:id)
+    start_commits = @commits.select{|c| c.parents.empty? && c.id != @root_commit}.map(&:id)
 
     nodes = []
     points = []
@@ -142,7 +144,7 @@ class Tree
     branches = repo.heads.select{|h| ids.include?(h.commit.id)}
     tags = repo.tags.select{|t| ids.include?(t.commit.id)}
     refs = branches + tags
-    start_commits = @commits.select{|c| c.parents.empty? }
+    start_commits = @commits.select{|c| c.parents.empty? && c.id != @root_commit}
 
     all_commits = @lanes.map(&:commits).flatten.reject(&:nil?)
     all_commits_ids = all_commits.map(&:id)
