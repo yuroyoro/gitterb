@@ -1,6 +1,15 @@
 $(function(){
+  var form_serialize = function(){
+    var params = $('#branch_selection_form').serialize();
+    if( ! $('input#all').attr('checked') ) {
+      params += '&all=false'
+    }
+    return params;
+  };
+
   var refresh = function(){
-    window.location = '/?' + $('#branch_selection_form').serialize();
+    var uri = '/?' + form_serialize();
+    window.location = uri;
     return false;
   };
 
@@ -55,7 +64,7 @@ $(function(){
       'flashInstallerPath': "/swf/playerProductInstall",
   };
 
-  $.getJSON("/tree.json?" + $('#branch_selection_form').serialize(),  function(json){
+  $.getJSON("/tree.json?" + form_serialize(),  function(json){
     var networ_json = {
       'dataSchema': {
         'nodes': [
