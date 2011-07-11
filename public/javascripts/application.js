@@ -4,6 +4,7 @@ $(function(){
     return false;
   };
 
+  $('select#repo').change(refresh);
   $('select#branch').change(refresh);
   $('input#all').change(refresh);
   $('input#max_count').change(refresh);

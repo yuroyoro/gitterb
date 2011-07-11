@@ -1,0 +1,4 @@
+Gitterb::Application.add_repositories(
+  ['/path/to/repository1',  'repo_name1'],
+  ['/path/to/repository2',  'repo_name2']
+)

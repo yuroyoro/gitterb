@@ -2,10 +2,12 @@ require 'grit'
 
 class Tree
 
-  attr_accessor :repo, :commits, :max_count, :branch, :target_branch_name,  :nodes, :edges, :points
+  attr_accessor :repo, :repository, :commits, :max_count, :branch, :target_branch_name,  :nodes, :edges, :points
 
   def initialize(repository, target_branch_name = 'master',  opts = {})
-    @repo = Grit::Repo.new(repository)
+    @repository = repository
+
+    @repo = @repository.repo
     @max_count= opts[:max_count] || 300
     @max_count = false if max_count < 0
     @target_branch_name  = target_branch_name
@@ -16,7 +18,7 @@ class Tree
       @branches = (opts[:brances] || []).map{|b| branch_of(b)}
     end
 
-    @commits = repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c) }.reverse
+    @commits = @repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c) }.reverse
     @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
     @commits.each{|c|
       parents = c.commit.parents.map{|p| @commits_hash[p.id]}.reject(&:nil?)

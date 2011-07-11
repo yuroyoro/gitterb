@@ -3,6 +3,8 @@
     = link_to 'Gitterb', '/'
   %form#branch_selection_form
     %span#branch_navi
+      repository:
+      = select_tag(:repo, options_from_collection_for_select(Repository.repo_names, :to_s, :to_s, @repo_name))
       branch:
       = select_tag(:branch , options_from_collection_for_select(@branches, :to_s, :to_s, @branch))
       all:
