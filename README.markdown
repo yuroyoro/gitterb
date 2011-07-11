@@ -14,10 +14,13 @@ Install dependencies gems using Bundler.
     gem install bundler # if you haven't
     bundle install ./vendor/bundle
 
-Edit config/database.yml and specify git reporsitory path(absolute path) .
+copy config/application.rb.sample to config/application.rb
 
-    development:
-      repository: '/home/your_name/your_repository'
+    cp config/application.rb.sample config/application.rb
+
+and edit config/application.rb and specify git reporsitory path(absolute path) .
+
+      REPOSITORY = '/home/your_name/your_repository'
 
 start server and visit 'http://localhsost:3000'
 
