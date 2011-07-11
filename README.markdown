@@ -14,13 +14,16 @@ Install dependencies gems using Bundler.
     gem install bundler # if you haven't
     bundle install ./vendor/bundle
 
-copy config/application.rb.sample to config/application.rb
+copy config/iniproperties/repositories.rb.sample to config/initializers/repositories.rb
 
-    cp config/application.rb.sample config/application.rb
+    cp config/initializers/repositories.rb.sample config/initializers/repositories.rb
 
-and edit config/application.rb and specify git reporsitory path(absolute path) .
+and edit config/initializers/repositories.rb and specify git reporsitory path(absolute path) .
 
-      REPOSITORY = '/home/your_name/your_repository'
+    Gitterb::Application.add_repositories(
+      ['/path/to/repository1',  'repo_name1'],
+      ['/path/to/repository2',  'repo_name2']
+    )
 
 start server and visit 'http://localhsost:3000'
 
