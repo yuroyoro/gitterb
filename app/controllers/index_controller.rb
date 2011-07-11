@@ -1,5 +1,6 @@
 class IndexController < ApplicationController
   def index
+    @repo_name = params[:repo] || Repository.first.name
     @branch = params[:branch] || 'master'
     @all = params[:all].nil? ? true : params[:all]
     @max_count = params[:max_count].try(:to_i) || 100

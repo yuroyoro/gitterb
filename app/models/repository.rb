@@ -13,12 +13,16 @@ class Repository
     @name = name || File.basename(path)
   end
 
+  def self.repo_names
+    config.map{|path, name| name || File.basename(path)}
+  end
+
   def self.config
     @config = Gitterb::Application.repositories
   end
 
   def self.find(repo_name)
-    name, path = config.find{|path, name| repo_name == name}
+    path, name = config.find{|path, name| repo_name == name}
     Repository.new(path, name) if path
   end
 
