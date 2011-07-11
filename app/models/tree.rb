@@ -197,10 +197,11 @@ class Tree
   end
 
   def new_lane(col, src, commit, lane, lanes)
-    pos = lanes.index(lane)
+    # pos = lanes.index(lane)
     next_col = col + 1
 
-    if next_lane = lanes[(pos + 1)..(lanes.size)].find(&:open?)
+    # if next_lane = lanes[(pos + 1)..(lanes.size)].find(&:open?)
+    if next_lane = lanes.find(&:open?)
       next_lane.add(src, commit, next_col)
     else
       lanes <<  Lane.new(src, commit, next_col)
