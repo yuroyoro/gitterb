@@ -7,7 +7,7 @@ class TreeController < ApplicationController
     max_count = params[:max_count].try(:to_i) || 100
     max_count = 100 unless max_count > 0
 
-    tree = Tree.new(repository_path, branch, :all => all, :max_count => max_count)
+    tree = Tree.new(grit_repo, branch, :all => all, :max_count => max_count)
 
     res = {
       :target_branch => tree.target_branch_name,
