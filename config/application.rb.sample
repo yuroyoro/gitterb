@@ -42,6 +42,7 @@ module Gitterb
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
 
+    # Specify browsing repository path.
     REPOSITORY = '/home/niku/kuwasero/gitrepo'
 
   end

@@ -14,7 +14,11 @@ Install dependencies gems using Bundler.
     gem install bundler # if you haven't
     bundle install ./vendor/bundle
 
-Edit config/application.rb and specify git reporsitory path(absolute path) .
+copy config/application.rb.sample to config/application.rb
+
+    cp config/application.rb.sample config/application.rb
+
+and edit config/application.rb and specify git reporsitory path(absolute path) .
 
       REPOSITORY = '/home/your_name/your_repository'
 
