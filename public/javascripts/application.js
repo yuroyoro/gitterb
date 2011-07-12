@@ -118,12 +118,18 @@ $(function(){
         var sha_1 = node.data.sha_1;
         var detail = $('div#detail');
         var x = e.mouseX;
+
         if( x < ($('html').width() / 2 ) ){
           detail.css('left', '50%');
         }else{
           detail.css('left', '0');
         }
-        detail.load('/commit/' + sha_1 + '?repo=' + $('select#repo').val(), function(){
+
+        var commit_uri = '/commit/' + sha_1;
+        if( $('select#repo').val())
+          commit_uri += '?repo=' + $('select#repo').val();
+
+        detail.load(commit_uri, function(){
           detail.show();
           $('a#close').click(detail_close);
         });
