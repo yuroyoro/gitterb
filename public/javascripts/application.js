@@ -123,7 +123,7 @@ $(function(){
         }else{
           detail.css('left', '0');
         }
-        detail.load('/commit/' + sha_1, function(){
+        detail.load('/commit/' + sha_1 + '?repo=' + $('select#repo').val(), function(){
           detail.show();
           $('a#close').click(detail_close);
         });

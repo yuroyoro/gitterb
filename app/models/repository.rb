@@ -40,7 +40,8 @@ class Repository
   end
 
   def commit(sha_1)
-    Commit.new(@repo.commit(sha_1))
+    c = @repo.commit(sha_1)
+    Commit.new(c) if c
   end
 
   def commits(start = 'master', max_count = 10, skip = 0)
