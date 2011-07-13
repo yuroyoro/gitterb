@@ -40,6 +40,20 @@ class Commit
     msg.join("\n")
   end
 
+  def commit_log_with_link(repository)
+    msg = []
+    rev_link = repository.rev_url.nil? ? id : "<a href='#{repository.rev_url % [id]}' target='_blank'>#{id}</a>"
+    msg << "Commit #{rev_link}"
+    msg << "Author: #{committer.name.force_encoding('utf-8')} <#{committer.email.force_encoding('utf-8')}>"
+    msg << "Date:   #{committed_date}"
+    msg << ""
+    message.force_encoding('utf-8').each_line{|s|
+      line = repository.ticket_url.nil? ? s : s.gsub(/refs #(\d+)/){|v| "refs #<a href='#{repository.ticket_url % [$1]}' target='_blank'>#{$1}</a>" }
+
+      msg << "    #{line}" }
+    msg.join("\n")
+  end
+
   def to_node(node_size = 100)
     { :id => short_id,
       :sha_1 => id,
