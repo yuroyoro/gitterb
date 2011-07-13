@@ -43,14 +43,9 @@ module Gitterb
     config.filter_parameters += [:password]
 
     # Specify browsing repository path.
-    def add_repository(path, name = nil)
-      name ||= File.basename(path)
-      @repos << [name, path]
-    end
-
-    def add_repositories(*repos)
+    def add_repository(path,opts = {})
       @repos ||= []
-      @repos += repos
+      @repos << [path, opts]
     end
 
     def repositories
