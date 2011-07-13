@@ -27,7 +27,6 @@ a:link {
   text-decoration:none;
 }
 
-
 span#title a {
   text-decoration:none;
 }
@@ -45,6 +44,22 @@ span#title a:active {
 
 span#title a:hover {
   color:white;
+}
+
+div#detail a {
+  text-decoration:underline;
+}
+div#detail a:link {
+  color:#6666FF;
+}
+div#detail a:visited {
+  color:#6666FF;
+}
+div#detail a:active {
+  color:#6666FF;
+}
+div#detail a:hover {
+  color:#6666FF;
 }
 
 span#branch_navi{

@@ -3,17 +3,10 @@
     %a#close{:href => '#'}
       close
   %div#detail_info
-    %pre= @commit.commit_log
+    %pre= raw @commit.commit_log_with_link(@repo)
   %div#diffs
     - @commit.diffs.each do |diff|
       %hr
       %div
         = raw Commit.to_diff_html(diff)
-
-
-
-
-
-
-
 

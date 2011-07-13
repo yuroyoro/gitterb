@@ -5,34 +5,35 @@ class Repository
 
   def_delegators :@repo,*ATTRIBUTES
 
-  attr_reader :repo, :path, :name
+  attr_reader :repo, :path, :name, :ticket_url, :rev_url
 
-  def initialize(path, name = nil)
+  def initialize(path, opts = {})
     @path = path
     @repo ||= Grit::Repo.new(path)
-    @name = name || File.basename(path)
+    @name = opts[:name] || File.basename(path)
+    @ticket_url = opts[:ticket_url]
+    @rev_url = opts[:rev_url]
+  end
+
+  def self.repos
+    return @repos if @repos
+    @repos = Gitterb::Application.repositories.map{|path, opts| Repository.new(path, opts) }
   end
 
   def self.repo_names
-    config.map{|path, name| name || File.basename(path)}
-  end
-
-  def self.config
-    @config = Gitterb::Application.repositories
+    repos.map(&:name)
   end
 
   def self.find(repo_name)
-    path, name = config.find{|path, name| repo_name == name}
-    Repository.new(path, name) if path
+    repos.find{|r| r.name == repo_name }
   end
 
   def self.first
-    path, name = config.first
-    Repository.new(path, name)
+    repos.first
   end
 
   def self.find_all
-    config.map{|path, name| Repository.new(path, name) }
+    repos
   end
 
   def branches

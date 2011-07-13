@@ -1,4 +1,7 @@
-Gitterb::Application.add_repositories(
-  ['/path/to/repository1',  'repo_name1'],
-  ['/path/to/repository2',  'repo_name2']
+Gitterb::Application.add_repository( '/path/to/repository1')
+Gitterb::Application.add_repository( '/path/to/repository2',
+  :name => 'repo_name2',
+  :ticket_url => 'http://redmine.example.com/issues/%s',
+  :rev_url => 'http://redmine.example.com/projects/someproject/repository/revisions/%s'
 )
+
