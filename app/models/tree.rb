@@ -202,7 +202,7 @@ class Tree
     pos = lanes.index(lane)
     next_col = col + 1
 
-    next_lane = lanes[0..pos].reverse.find(&:open?) || lanes[(pos + 1)..(lanes.size)].find(&:open?)
+    next_lane = lanes[(pos + 1)..(lanes.size)].find(&:open?) || lanes[0..pos].reverse.find(&:open?)
     if next_lane
       next_lane.add(src, commit, next_col)
     else
