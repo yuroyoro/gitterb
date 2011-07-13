@@ -20,9 +20,14 @@ copy config/iniproperties/repositories.rb.sample to config/initializers/reposito
 
 and edit config/initializers/repositories.rb and specify git reporsitory path(absolute path) .
 
-    Gitterb::Application.add_repositories(
-      ['/path/to/repository1',  'repo_name1'],
-      ['/path/to/repository2',  'repo_name2']
+    # pass to reporsitory path(absolute path).
+    Gitterb::Application.add_repository( '/path/to/repository1')
+
+    # pass to repositoy pass and some options(name, issue trackers url and revisions url...).
+    Gitterb::Application.add_repository( '/path/to/repository2',
+      :name => 'repo_name2',
+      :ticket_url => 'http://redmine.example.com/issues/%s',
+      :rev_url => 'http://redmine.example.com/projects/someproject/repository/revisions/%s'
     )
 
 start server and visit 'http://localhsost:3000'
