@@ -1,3 +1,9 @@
+//= require jquery
+//= require jquery_ujs
+//= require AC_OETags.min.js
+//= require cytoscapeweb.min.js
+//= require json2.min.js
+
 $(function(){
   var form_serialize = function(){
     var params = $('#branch_selection_form').serialize();
