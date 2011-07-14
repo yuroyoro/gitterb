@@ -48,7 +48,7 @@ class Commit
     msg << "Date:   #{committed_date}"
     msg << ""
     message.force_encoding('utf-8').each_line{|s|
-      line = repository.ticket_url.nil? ? s : s.gsub(/refs #(\d+)/){|v| "refs #<a href='#{repository.ticket_url % [$1]}' target='_blank'>#{$1}</a>" }
+      line = repository.ticket_url.nil? ? s : s.gsub(/ #(\d+) /){|v| " #<a href='#{repository.ticket_url % [$1]}' target='_blank'>#{$1}</a> " }
 
       msg << "    #{line}" }
     msg.join("\n")
