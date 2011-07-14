@@ -18,6 +18,22 @@ class Tree
       @branches = (opts[:brances] || []).map{|b| branch_of(b)}
     end
 
+    setup_commits
+
+    @root_commit = repo.git.log({:reverse => true, :pretty => '%H'},  '| head -1').chomp
+
+    build
+    @nodes, @points = to_nodes_and_points(opts)
+    @edges = to_edges
+  end
+
+  def branch_of(branch_name)
+    @repo.get_head(branch_name)
+  end
+
+  private
+
+  def setup_commits
     @commits = @repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c) }.reverse
     @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
     @commits.each{|c|
@@ -42,19 +58,7 @@ class Tree
       parents.each{|p| c.add_parent(p) }
       parents.each{|p| p.add_child(c) }
     }
-
-    @root_commit = repo.git.log({:reverse => true, :pretty => '%H'},  '| head -1').chomp
-
-    build
-    @nodes, @points = to_nodes_and_points(opts)
-    @edges = to_edges
   end
-
-  def branch_of(branch_name)
-    @repo.get_head(branch_name)
-  end
-
-  private
 
   def to_nodes_and_points(opts = {})
     node_size = opts[:node_size].try(&:to_i) || 100
