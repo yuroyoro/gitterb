@@ -1,7 +1,7 @@
 Gitterb The Graphical Git Repository Viewer.
 ===========================================================================
 
-The Graphical Git reporsitory Viewer Made by Ruby on Rails 3.0.9.
+The Graphical Git reporsitory Viewer Made by Ruby on Rails 3.1.0.rc4
 
 ## Setup
 
