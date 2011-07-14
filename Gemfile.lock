@@ -46,9 +46,15 @@ GEM
     capistrano-ext (1.2.1)
       capistrano (>= 1.0.0)
     capistrano_colors (0.5.4)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.1.1)
     columnize (0.3.4)
     diff-lcs (1.1.2)
     erubis (2.7.0)
+    execjs (1.2.0)
+      multi_json (~> 1.0)
     factory_girl (1.3.3)
     grit (2.4.1)
       diff-lcs (~> 1.1)
@@ -136,6 +142,12 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
+    sass (3.1.4)
+    sass-rails (3.1.0.rc.4)
+      actionpack (~> 3.1.0.rc1)
+      railties (~> 3.1.0.rc1)
+      sass (>= 3.1.4)
+      sprockets (>= 2.0.0.beta.9)
     sprockets (2.0.0.beta.10)
       hike (~> 1.0)
       rack (~> 1.0)
@@ -145,6 +157,9 @@ GEM
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     tzinfo (0.3.29)
+    uglifier (1.0.0)
+      execjs (>= 0.3.0)
+      multi_json (>= 1.0.2)
     unicorn (4.0.1)
       kgio (~> 2.4)
       rack
@@ -161,6 +176,7 @@ DEPENDENCIES
   capistrano
   capistrano-ext
   capistrano_colors
+  coffee-script
   factory_girl
   grit
   haml-rails
@@ -169,5 +185,7 @@ DEPENDENCIES
   rails3-generators
   rspec-rails (>= 2.0.0)
   ruby-debug19
+  sass-rails (= 3.1.0.rc4)
+  uglifier
   unicorn
   webrat

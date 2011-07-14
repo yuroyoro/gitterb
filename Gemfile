@@ -10,6 +10,11 @@ gem 'rails', '3.1.0.rc4'
 # Use unicorn as the web server
 gem 'unicorn'
 
+# Asset template engines
+gem 'sass-rails', "3.1.0.rc4"
+gem 'coffee-script'
+gem 'uglifier'
+
 # Deploy with Capistrano
 gem 'capistrano'
 gem 'capistrano-ext'
