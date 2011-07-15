@@ -3,12 +3,13 @@ require 'albino'
 class Commit
   extend Forwardable
 
-  ATTRIBUTES = %w[ id repo tree diffs author authored_date committer committed_date message short_message author_string]
+  ATTRIBUTES = %w[ id tree author authored_date committer committed_date message short_message author_string ]
 
   def_delegators :@commit,*ATTRIBUTES
-  attr_reader :commit, :parents, :children
+  attr_reader :commit, :repo, :parents, :children
 
-  def initialize(commit)
+  def initialize(commit, repo)
+    @repo = repo
     @commit = commit
     @parents = []
     @children = []
@@ -30,6 +31,27 @@ class Commit
     id[0..7]
   end
 
+  def middle_id
+    id[0..20]
+  end
+
+  def setup_parents_and_children
+    @parents  = find_parents
+    @children = find_children
+  end
+
+  def find_parents
+    commit.parents.map{|c| Commit.new(c, repo) }
+  end
+
+  def find_children
+    repo.repo.git.rev_list({:all => true, :parents => true},  %q!|  grep " 1aee0e024f85f6921a61eb3c578f18dcadca170e" | cut -d ' ' -f1!).split("\n").map{|sha_1| repo.commit(sha_1) }
+  end
+
+  def stats
+    @stats ||= Grit::CommitStats.find_all(repo.repo, id, options = {:m => true, :max_count => 1}).first.last
+  end
+
   def commit_log
     msg = []
     msg << "Commit #{id}"
@@ -37,20 +59,6 @@ class Commit
     msg << "Date:   #{committed_date}"
     msg << ""
     message.force_encoding('utf-8').each_line{|s| msg << "    #{s}" }
-    msg.join("\n")
-  end
-
-  def commit_log_with_link(repository)
-    msg = []
-    rev_link = repository.rev_url.nil? ? id : "<a href='#{repository.rev_url % [id]}' target='_blank'>#{id}</a>"
-    msg << "Commit #{rev_link}"
-    msg << "Author: #{committer.name.force_encoding('utf-8')} <#{committer.email.force_encoding('utf-8')}>"
-    msg << "Date:   #{committed_date}"
-    msg << ""
-    message.force_encoding('utf-8').each_line{|s|
-      line = repository.ticket_url.nil? ? s : s.gsub(/ #(\d+) /){|v| " #<a href='#{repository.ticket_url % [$1]}' target='_blank'>#{$1}</a> " }
-
-      msg << "    #{line}" }
     msg.join("\n")
   end
 
@@ -70,12 +78,22 @@ class Commit
     }
   end
 
-  def diff_htmls
-    diffs.map{|diff| self.to_diff_html(diff) }
+  def diffs
+    # @diffs ||= @commit.diffs.each{|d| Diff.new(d) }
+    if commit.parents.empty?
+      @diffs ||= @commit.diffs.each{|d| CommitDiff.new(d) }
+    else
+      text = @repo.repo.git.native("diff", {:full_index => true, :C => true}, commit.parents.first.id, id)
+      Grit::Diff.list_from_string(commit.repo, text).map{|d| CommitDiff.new(d)}
+    end
   end
 
-  def self.to_diff_html(diff)
-    Albino.colorize(diff.diff, :diff).sub(/<pre><span/, "<pre>\n<span")
-  end
+  # def diff_htmls
+    # @commit.diffs.map{|diff| self.to_diff_html(diff) }
+  # end
+
+  # def self.to_diff_html(diff)
+    # Albino.colorize(diff.diff, :diff).sub(/<pre><span/, "<pre>\n<span")
+  # end
 
 end

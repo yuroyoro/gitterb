@@ -42,15 +42,15 @@ class Repository
 
   def commit(sha_1)
     c = @repo.commit(sha_1)
-    Commit.new(c) if c
+    Commit.new(c, self) if c
   end
 
   def commits(start = 'master', max_count = 10, skip = 0)
-    @repo.commits(start, max_count, skip).map{|c| Commit.new(c)}
+    @repo.commits(start, max_count, skip).map{|c| Commit.new(c, self)}
   end
 
   def commits_between(from, to)
-    @repo.commits_between(from, to).map{|c| Commit.new(c)}
+    @repo.commits_between(from, to).map{|c| Commit.new(c, self)}
   end
 
 end

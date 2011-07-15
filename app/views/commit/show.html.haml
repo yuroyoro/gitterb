@@ -2,11 +2,66 @@
   %div
     %a#close{:href => '#'}
       close
-  %div#detail_info
-    %pre= raw @commit.commit_log_with_link(@repo)
-  %div#diffs
-    - @commit.diffs.each do |diff|
-      %hr
-      %div
-        = raw Commit.to_diff_html(diff)
+  #commit.single_commit
+    .group
+      .envelope.commit
+        .human
+          .message
+            %pre= raw message_with_link(@commit)
+          .actor
+            .gravatar
+              %img{ :src => gravator_link(@commit) , :height => "30", :alt => "", :width => "30" }
+            .name
+              %a= @commit.author.name
+              %span
+                (author)
+            .date
+              %time.js-relative-date{ :title => @commit.authored_date, :datetime => @commit.authored_date}
+                = time_ago_in_words(@commit.authored_date)
+        .machine
+          %span
+            c
+          ommit&nbsp;&nbsp;
+          = link_to_commit(@commit, 20)
+          %br
+          %span
+            t
+          ree&nbsp;&nbsp;&nbsp;&nbsp;
+          = @commit.tree.id[0..20]
+          %br
+
+          - @commit.parents.each do |p|
+            %span
+              p
+            arent&nbsp;
+            = link_to_commit(p, 20, {"data-key" => "p"})
+            %br
+
+  %p.explain= commit_explain(@commit)
+
+  %table#toc
+    %tbody
+      - @commit.diffs.each_with_index do |diff, i|
+        %tr
+          %td{:class => "status #{diff.status.to_s}" }
+            %span.stat-icon{ :title => diff.status.to_s }= diff.status_str
+          %td.path
+            %a{ :href => "#diff-#{i}" }= diff.pathname
+        %td.diffstat
+          %a.tooltipped.leftwards{ :href => "#diff-#{i}", :title => "" }
+            %span.diffstat-summary= diff.total
+            %span.diffstat-bar
+              - diffstat_bar_cnt = diffstat_bar(diff)
+              - diffstat_bar_cnt.first.times do
+                %span.plus
+                  •
+              - diffstat_bar_cnt.last.times do
+                %span.minus
+                  •
+
+  -# %div#diffs
+    -# - @commit.commit.diffs.each do |diff|
+      -# %hr
+      -# %div
+        -# = raw Commit.to_diff_html(diff)
 
