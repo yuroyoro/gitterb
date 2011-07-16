@@ -103,7 +103,7 @@ module CommitHelper
 
   def to_html_line(line)
 
-    l = CGI.escapeHTML(line.line)
+    l = CGI.escapeHTML(line.line.force_encoding('utf-8'))
     case line.mode
     when :sep
       "<div class='gc'>#{l}</div>"

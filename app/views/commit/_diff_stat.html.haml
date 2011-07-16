@@ -6,14 +6,14 @@
           %span.stat-icon{ :title => diff.status.to_s }= diff.status_str
         %td.path
           %a{ :href => "#diff-#{i}" }= diff.pathname
-      %td.diffstat
-        %a.tooltipped.leftwards{ :href => "#diff-#{i}", :title => "" }
-          %span.diffstat-summary= diff.total
-          %span.diffstat-bar
-            - diffstat_bar_cnt = diffstat_bar(diff)
-            - diffstat_bar_cnt.first.times do
-              %span.plus
-                •
-            - diffstat_bar_cnt.last.times do
-              %span.minus
-                •
+        %td.diffstat
+          %a.tooltipped.leftwards{ :href => "#diff-#{i}", :title => "" }
+            %span.diffstat-summary= diff.total
+            %span.diffstat-bar
+              - diffstat_bar_cnt = diffstat_bar(diff)
+              - diffstat_bar_cnt.first.times do
+                %span.plus
+                  •
+              - diffstat_bar_cnt.last.times do
+                %span.minus
+                  •

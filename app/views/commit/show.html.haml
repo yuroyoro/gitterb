@@ -13,10 +13,3 @@
     - @commit.diffs.each_with_index do |diff, i|
       = render :partial => "file_diff", :locals => {:commit => @commit, :diff => diff, :index => i }
 
-
-  -# %div#diffs
-    -# - @commit.commit.diffs.each do |diff|
-      -# %hr
-      -# %div
-        -# = raw Commit.to_diff_html(diff)
-
