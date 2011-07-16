@@ -97,6 +97,8 @@ div#detail{
 div#detail_content{
   margin:10px;
   margin-top:40px;
+  display:block;
+  line-height: 1.4;
 }
 div#detail_info{
   background-color:white;

@@ -6,7 +6,7 @@
       = diff.pathname
     %ul.actions
       %li
-        = link_to_file(commit, diff.b_path, "view file @<code>#{commit.short_id}</code>")
+        = link_to_file(commit, diff.b_path, "view file @#{commit.short_id}")
   .data.highlight
     %table{ :cellspacing => "0", :cellpadding => "0", :width => "100%" }
       %tbody
