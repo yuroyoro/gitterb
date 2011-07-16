@@ -34,7 +34,7 @@ class Tree
   private
 
   def setup_commits
-    @commits = @repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c) }.reverse
+    @commits = @repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c, @repository) }.reverse
     @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
     @commits.each{|c|
       parents = c.commit.parents.map{|p| @commits_hash[p.id]}.reject(&:nil?)
@@ -47,7 +47,7 @@ class Tree
       merge_base = @repo.git.merge_base({}, @target_branch_name, b.name).chomp
       next unless @commits_hash.keys.include?(merge_base)
 
-      @repo.commits_between(merge_base, b.name).map{|c| Commit.new(c)}.each{|c|
+      @repo.commits_between(merge_base, b.name).map{|c| Commit.new(c, @repository)}.each{|c|
         branches_commits[c.id] ||= c
       }
     }

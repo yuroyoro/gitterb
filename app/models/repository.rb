@@ -5,7 +5,7 @@ class Repository
 
   def_delegators :@repo,*ATTRIBUTES
 
-  attr_reader :repo, :path, :name, :ticket_url, :rev_url
+  attr_reader :repo, :path, :name, :ticket_url, :rev_url, :file_url
 
   def initialize(path, opts = {})
     @path = path
@@ -13,6 +13,7 @@ class Repository
     @name = opts[:name] || File.basename(path)
     @ticket_url = opts[:ticket_url]
     @rev_url = opts[:rev_url]
+    @file_url = opts[:file_url]
   end
 
   def self.repos
@@ -42,15 +43,15 @@ class Repository
 
   def commit(sha_1)
     c = @repo.commit(sha_1)
-    Commit.new(c) if c
+    Commit.new(c, self) if c
   end
 
   def commits(start = 'master', max_count = 10, skip = 0)
-    @repo.commits(start, max_count, skip).map{|c| Commit.new(c)}
+    @repo.commits(start, max_count, skip).map{|c| Commit.new(c, self)}
   end
 
   def commits_between(from, to)
-    @repo.commits_between(from, to).map{|c| Commit.new(c)}
+    @repo.commits_between(from, to).map{|c| Commit.new(c, self)}
   end
 
 end

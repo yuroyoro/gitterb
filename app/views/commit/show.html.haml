@@ -2,11 +2,14 @@
   %div
     %a#close{:href => '#'}
       close
-  %div#detail_info
-    %pre= raw @commit.commit_log_with_link(@repo)
-  %div#diffs
-    - @commit.diffs.each do |diff|
-      %hr
-      %div
-        = raw Commit.to_diff_html(diff)
+
+  = render :partial => "commit_info", :locals => {:commit => @commit }
+
+  %p.explain= commit_explain(@commit)
+
+  = render :partial => "diff_stat", :locals => {:commit => @commit }
+
+  #files.diff-view.commentable
+    - @commit.diffs.each_with_index do |diff, i|
+      = render :partial => "file_diff", :locals => {:commit => @commit, :diff => diff, :index => i }
 

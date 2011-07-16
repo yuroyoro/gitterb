@@ -1,0 +1,18 @@
+#diff-0.file
+  .meta{ "data-path" => diff.b_path }
+    .info
+      %span.icon
+        %img{ :src => "https://gs1.wac.edgecastcdn.net/80460E/assets/images/icons/txt.png", :height => "16", :alt => "Txt", :width => "16" }
+      = diff.pathname
+    %ul.actions
+      %li
+        = link_to_file(commit, diff.b_path, "view file @<code>#{commit.short_id}</code>")
+  .data.highlight
+    %table{ :cellspacing => "0", :cellpadding => "0", :width => "100%" }
+      %tbody
+        - diff.lines.each_with_index do |line, n|
+          %tr{ "data-position" => n }
+            %td{:id => "L#{index}L#{n}", :class => "line_numbers linkable-line-number"}= to_line_num_l(line)
+            %td{:id => "L#{index}L#{n}", :class => "line_numbers linkable-line-number"}= to_line_num_r(line)
+            %td{ :width => "100%" }
+              %pre= raw to_html_line(line)
