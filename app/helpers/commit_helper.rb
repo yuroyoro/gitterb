@@ -116,5 +116,10 @@ module CommitHelper
     end
   end
 
+  def envelope_title(text)
+    s = "<span>#{text[0]}</span>#{text[1..text.length]}"
+    s + ("&nbsp;" * (10 - text.length))
+  end
+
 end
 

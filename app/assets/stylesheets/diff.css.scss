@@ -49,7 +49,7 @@ table#toc{border-top:1px solid #ddd;border-spacing:0;padding:0;margin:10px 0;wid
 #toc td.renamed .stat-icon{background-position:0 -150px;}
 #toc .diffstat{padding-right:0;width:1%;}
 #toc .diffstat{white-space:nowrap;text-align:right;}
-#toc .diffstat a{text-decoration:none;padding-right:15px;background:url(../images/jump.png') 100% 5px no-repeat;}
+#toc .diffstat a{text-decoration:none;padding-right:15px;background:url('../images/jump.png') 100% 5px no-repeat;}
 #toc .diffstat a:hover{background-position:100% -45px;}
 #toc .diffstat-summary{font-family:helvetica,arial,freesans,clean,sans-serif;text-align:right;color:#666;font-weight:bold;font-size:11px;}
 #toc .diffstat-bar{display:inline-block;width:50px;height:9px;text-decoration:none;text-align:left;background:url('../images/diffstat.png') 0 -100px repeat-x;}
