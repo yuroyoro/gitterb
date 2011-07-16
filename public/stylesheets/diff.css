@@ -76,16 +76,19 @@ div#detail_content td, th {
 div#detail_content  table pre{
   margin:0;
 }
+div#detail_content  ul.actions{
+  margin:0;
+}
 
 .file{margin:15px 0;}
 .file>.highlight{padding:5px;background:#f8f8ff;border:1px solid #d4d4e3;}
-.file>h3{margin:0;padding:5px;font-size:12px;color:#333;text-shadow:1px 1px 0 rgba(255,255,255,0.5);border:1px solid #ccc;border-bottom:none;background:url('../../images/modules/commit/file_head.gif') 0 0 repeat-x #eee;}
+.file>h3{margin:0;padding:5px;font-size:12px;color:#333;text-shadow:1px 1px 0 rgba(255,255,255,0.5);border:1px solid #ccc;border-bottom:none;background:url('../images/file_head.gif') 0 0 repeat-x #eee;}
 
 #files.fullscreen{position:inherit;}
 #files{;}
 #files .file,.file-box{border:1px solid #ccc;margin-bottom:1em;position:relative;background-color:#DDD;}
 #files .file .highlight,.file-box .highlight{border:none;padding:0;}
-#files .file .meta,.file-box .meta{padding:0 5px;height:33px;line-height:33px;font-size:12px;color:#333;background:url('../../images/modules/commit/file_head.gif') 0 0 repeat-x #eee;text-shadow:1px 1px 0 rgba(255,255,255,0.5);border-bottom:1px solid #ccc;overflow:hidden;}
+#files .file .meta,.file-box .meta{padding:0 5px;height:33px;line-height:33px;font-size:12px;color:#333;background:url('../images/file_head.gif') 0 0 repeat-x #eee;text-shadow:1px 1px 0 rgba(255,255,255,0.5);border-bottom:1px solid #ccc;overflow:hidden;}
 #files .file .meta .info,.file-box .meta .info{float:left;height:33px;line-height:33px;font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;}
 #files .file .meta .info span,.file-box .meta .info span{padding-left:9px;margin-left:5px;background:url('../../images/modules/commit/action_separator.png') 0 50% no-repeat;}
 #files .file .meta .info span:first-child,#files .file .meta .info .icon+span,.file-box .meta .info span:first-child,.file-box .meta .info .icon+span{background:transparent;margin-left:0;padding-left:0;}
