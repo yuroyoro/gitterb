@@ -5,10 +5,6 @@ The Graphical Git reporsitory Viewer Made by Ruby on Rails 3.0.9.
 
 ## Setup
 
-Gitterb requires pygments. install it if you haven't.
-
-    sudo easy_install pygments
-
 Install dependencies gems using Bundler.
 
     gem install bundler # if you haven't

@@ -1,5 +1,3 @@
-require 'albino'
-
 class Commit
   extend Forwardable
 
@@ -79,7 +77,6 @@ class Commit
   end
 
   def diffs
-    # @diffs ||= @commit.diffs.each{|d| Diff.new(d) }
     if commit.parents.empty?
       @diffs ||= @commit.diffs.each{|d| CommitDiff.new(d) }
     else
@@ -87,13 +84,4 @@ class Commit
       Grit::Diff.list_from_string(commit.repo, text).map{|d| CommitDiff.new(d)}
     end
   end
-
-  # def diff_htmls
-    # @commit.diffs.map{|diff| self.to_diff_html(diff) }
-  # end
-
-  # def self.to_diff_html(diff)
-    # Albino.colorize(diff.diff, :diff).sub(/<pre><span/, "<pre>\n<span")
-  # end
-
 end
