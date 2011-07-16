@@ -5,7 +5,7 @@ class Repository
 
   def_delegators :@repo,*ATTRIBUTES
 
-  attr_reader :repo, :path, :name, :ticket_url, :rev_url
+  attr_reader :repo, :path, :name, :ticket_url, :rev_url, :file_url
 
   def initialize(path, opts = {})
     @path = path
@@ -13,6 +13,7 @@ class Repository
     @name = opts[:name] || File.basename(path)
     @ticket_url = opts[:ticket_url]
     @rev_url = opts[:rev_url]
+    @file_url = opts[:file_url]
   end
 
   def self.repos

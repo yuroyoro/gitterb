@@ -45,7 +45,7 @@ module CommitHelper
     msg.join("\n")
   end
 
-  def link_to_commit(commit, length = nil, options)
+  def link_to_commit(commit, length = nil, options = {})
     c_id = length.nil? ? commit.id : commit.id[0..length]
     if commit.repo.rev_url
       link_to c_id, commit.repo.rev_url % [c_id], options.merge({:target => "_blank"})
@@ -62,6 +62,15 @@ module CommitHelper
     end
   end
 
+  def link_to_file(commit, path, name = nil)
+    name = path unless name
+    if commit.repo.file_url
+      link_to name , commit.repo.file_url % [commit.id, path], {:target => "_blank"}
+    else
+      name
+    end
+  end
+
   def commit_explain(commit)
     diffs = commit.diffs
     additions = diffs.map(&:additions).sum
@@ -74,6 +83,37 @@ module CommitHelper
   def diffstat_bar(diff)
     return [0, 0] if diff.total == 0
     [(diff.additions * 100 /diff.total) / 20, (diff.deletions * 100 /diff.total) / 20 ]
+  end
+
+  def to_line_num_l(line)
+    if line.mode == :sep
+      "..."
+    else
+      line.num_l ? line.num_l : ""
+    end
+  end
+
+  def to_line_num_r(line)
+    if line.mode == :sep
+      "..."
+    else
+      line.num_r ? line.num_r : ""
+    end
+  end
+
+  def to_html_line(line)
+
+    l = CGI.escapeHTML(line.line)
+    case line.mode
+    when :sep
+      "<div class='gc'>#{l}</div>"
+    when :add
+      "<div class='gi'>#{l}</div>"
+    when :del
+      "<div class='gd'>#{l}</div>"
+    else
+      l
+    end
   end
 
 end

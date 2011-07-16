@@ -67,6 +67,8 @@ class CommitDiff
     }.join("/")
   end
 
+  Line = Struct.new(:num_l, :num_r, :line, :mode)
+
   private
   def parse(diff)
     line_num_l = $2.to_i
@@ -79,21 +81,21 @@ class CommitDiff
       if line =~ /^@@ (\+|\-)(\d+)(,\d+)? (\+|\-)(\d+)(,\d+)? @@.*$/ then puts "#{$2}, #{$5}"
         line_num_l = $2.to_i
         line_num_r = $5.to_i
-        l << [nil, nil, line.chomp, :sep]
+        l << Line.new(nil, nil, line.chomp, :sep)
         parsing = true
       elsif parsing
         if line[0, 1] == "+"
           line_num_r += 1
-          l << [nil, line_num_r, line[1..-1].chomp, :add]
+          l << Line.new(nil, line_num_r, line[1..-1].chomp, :add)
           a += 1
         elsif line[0, 1] == "-"
           line_num_l += 1
-          l << [line_num_l, nil, line[1..-1].chomp, :del]
+          l << Line.new( line_num_l, nil, line[1..-1].chomp, :del )
           d += 1
         else
           line_num_r += 1
           line_num_l += 1
-          l << [line_num_l,line_num_r, line[1..-1].chomp, :eq]
+          l << Line.new(line_num_l,line_num_r, line[1..-1].chomp, :eq)
         end
       end
     end
