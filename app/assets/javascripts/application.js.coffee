@@ -52,6 +52,7 @@ $ ->
       'width': 6
       'directed' : { 'passthroughMapper' : { 'attrName' : "directed" } }
       'style'    : { 'passthroughMapper' : { 'attrName' : "style" } }
+      'color'    : { 'passthroughMapper' : { 'attrName' : "color" } }
       'opacity'  : { 'passthroughMapper' : { 'attrName' : "opacity" } }
     }
   }
@@ -83,6 +84,7 @@ $ ->
         'edges':[
           { 'name': "directed" , 'type': "boolean"}
           { 'name': "style"    , 'type': "string" }
+          { 'name': "color"    , 'type': "string" }
           { 'name': "opacity"  , 'type': "number" }
         ]
       }

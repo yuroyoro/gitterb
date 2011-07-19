@@ -42,6 +42,8 @@ class Tree
       parents.each{|p| p.add_child(c) }
     }
 
+    @main_commits_ids = @commits.map(&:id)
+
     branches_commits = {}
     @branches.each{|b|
       merge_base = @repo.git.merge_base({}, @target_branch_name, b.name).chomp
@@ -75,6 +77,7 @@ class Tree
       lane.commits.map{|c|
         { :refs=> branches.select{|b| b.commit.id == c.id} + tags.select{|t| t.commit.id == c.id},
           :start    => start_commits.include?(c.id),
+          :main_line => @main_commits_ids.include?(c.id),
           :divergence =>
              (c.parents.empty? or c.parents.size > 1 or c.children.empty? or c.children.size > 1),
           :node => c.to_node(node_size)
@@ -127,6 +130,7 @@ class Tree
           points <<  {:id => s_id, :x => point_x - 150, :y => point_y }
         end
 
+        node[:color] = "#FFFFCC" if e[:main_line]
         node[:color] = "#DDFFFF" if e[:divergence] or e[:start]
         node[:color] = "#FFDDDD" if e[:refs].present?
 
@@ -160,6 +164,7 @@ class Tree
       { :id => "s_#{c.short_id}_#{c.short_id}",
         :target => c.short_id, :source => "s_#{c.short_id}",
         :directed => false,
+        :color => '#CCCCCC',
         :style => 'DOT'}
     }
   end
@@ -239,8 +244,10 @@ class Tree
   end
 
   def to_edge(src, dst)
+    color = @main_commits_ids.include?(src.id) ? '#999999' : '#CCCCCC'
     { :id => "#{src.id[0..7]}_#{dst.id[0..7]}",
       :source => src.short_id, :target => dst.short_id,
+      :color => color,
       :directed => true,
       :style => 'SOLID' }
   end
@@ -255,6 +262,7 @@ class Tree
     { :id => "#{ref_id}_#{r.commit.id[0..7]}",
       :target => ref_id, :source => r.commit.id[0..7],
       :directed => false,
+      :color => '#CCCCCC',
       :style => 'DOT'}
   end
 

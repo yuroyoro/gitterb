@@ -38,6 +38,14 @@ class Commit
     @children = find_children
   end
 
+  def author_name
+    author.name.force_encoding('utf-8')
+  end
+
+  def committer_name
+    committer.name.force_encoding('utf-8')
+  end
+
   def find_parents
     commit.parents.map{|c| Commit.new(c, repo) }
   end
@@ -53,7 +61,7 @@ class Commit
   def commit_log
     msg = []
     msg << "Commit #{id}"
-    msg << "Author: #{committer.name.force_encoding('utf-8')} <#{committer.email.force_encoding('utf-8')}>"
+    msg << "Author: #{committer_name} <#{committer.email.force_encoding('utf-8')}>"
     msg << "Date:   #{committed_date}"
     msg << ""
     message.force_encoding('utf-8').each_line{|s| msg << "    #{s}" }
