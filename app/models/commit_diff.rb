@@ -78,7 +78,7 @@ class CommitDiff
     l = []
     parsing = false
     diff.lines.each do |line|
-      if line =~ /^@@ (\+|\-)(\d+)(,\d+)? (\+|\-)(\d+)(,\d+)? @@.*$/ then puts "#{$2}, #{$5}"
+      if line =~ /^@@ (\+|\-)(\d+)(,\d+)? (\+|\-)(\d+)(,\d+)? @@.*$/
         line_num_l = $2.to_i
         line_num_r = $5.to_i
         l << Line.new(nil, nil, line.chomp, :sep)

@@ -27,7 +27,7 @@ module CommitHelper
     repo = commit.repo
     msg = []
     message.force_encoding('utf-8').each_line{|s|
-      msg << s.gsub(/ #(\d+) /){|v| link_to_issue(commit, $1)}
+      msg << s.gsub(/ #(\d+) /){|v| " #{link_to_issue(commit, $1)} " }
     }
     msg.join("\n")
   end
