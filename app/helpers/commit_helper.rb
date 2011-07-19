@@ -112,13 +112,13 @@ module CommitHelper
     when :del
       "<div class='gd'>#{l}</div>"
     else
-      l
+      "<div>#{l}</div>"
     end
   end
 
   def envelope_title(text)
     s = "<span>#{text[0]}</span>#{text[1..text.length]}"
-    s + ("&nbsp;" * (10 - text.length))
+    s + ("&nbsp;" * (7 - text.length))
   end
 
 end

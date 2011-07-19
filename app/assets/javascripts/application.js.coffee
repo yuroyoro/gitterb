@@ -120,7 +120,7 @@ $ ->
         x = e.mouseX
 
         if x < ($('html').width() / 2 )
-          detail.css('left', '50%')
+          detail.css('left', '45%')
         else
           detail.css('left', '0')
 
