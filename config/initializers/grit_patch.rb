@@ -1,6 +1,3 @@
-Grit.debug = true
-puts "grit patching"
-
 module Grit
   class Git
     def options_to_argv(options)

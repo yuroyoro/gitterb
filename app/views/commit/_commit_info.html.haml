@@ -15,20 +15,13 @@
             %time.js-relative-date{ :title => commit.authored_date, :datetime => commit.authored_date}
               = time_ago_in_words(commit.authored_date)
       .machine
-        %span
-          c
-        ommit&nbsp;&nbsp;
+        = raw envelope_title("commit")
         = link_to_commit(commit, 20)
         %br
-        %span
-          t
-        ree&nbsp;&nbsp;&nbsp;&nbsp;
+        = raw envelope_title("tree")
         = commit.tree.id[0..20]
         %br
-
         - commit.parents.each do |p|
-          %span
-            p
-          arent&nbsp;
+          = raw envelope_title("parent")
           = link_to_commit(p, 20, {"data-key" => "p"})
           %br

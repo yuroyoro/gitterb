@@ -1,0 +1,422 @@
+
+#commit{
+  overflow:hidden;
+
+   h2 { margin:0; }
+   .group     { border-top:1px solid #bedce7;}
+   .separator { padding-top:1em;}
+   .envelope  {
+     border-bottom:1px solid #bedce7;
+     border-left:1px solid #bedce7;
+     border-right:1px solid #bedce7;
+     padding:0 .7em .7em .7em;
+     background:#eaf2f5 url('../images/bg_gradient.gif') 0 100% repeat-x;
+     overflow:hidden;
+
+     .selected { background:#fffeeb!important;}
+     .selected .machine span{ border-bottom:1px dotted #4183c4; }
+     .single_commit .envelope .machine span{border-bottom:1px dotted #4183c4;}
+
+   }
+
+   .human{
+     padding-top:.7em;
+     float:left;
+     width:38em;
+
+     .refs{ font-size:150%;}
+     .message{
+       font-size:13px;
+
+       pre{
+         white-space:pre-wrap;
+         word-wrap:break-word;
+         width:48em;
+         font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+       }
+     }
+     .message a{color:#000;}
+     .message a.vis{color:#4183c4;}
+
+     .actor{
+       clear:left;
+       margin-top:.75em;
+
+       .gravatar{
+         border:1px solid #d0d0d0;
+         padding:2px;
+         background-color:white;
+         float:left;
+         line-height:0;
+         margin-right:.7em;
+       }
+       .name{line-height:1.5em;}
+       .name a{color:#000;}
+       .name span{color:#888;font-size:90%;}
+       .date{color:#888;font-size:90%;line-height:1em;}
+     }
+
+   }
+
+   .machine{
+     float:right;
+     width:20em;
+     padding:.8em 0 .8em 1.2em;
+     border-left:1px solid #bedce7;
+     color:#808080;
+     font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+     font-size:.85em;
+     font-weight:bold;
+     line-height:1.5em;
+    }
+
+   .commit_oneline{
+     background:#eaf2f5 url('../images/bg_gradient.gif') 0 100% repeat-x;
+
+     td{ border-bottom:1px solid #bedce7;}
+
+     .date{
+       color:#888;
+       width:1%;
+       padding:0 1em 0 .5em;
+       border-left:1px solid #bedce7;
+     }
+     .author{width:15%;}
+     .gravatar{width:1%;}
+     .gravatar img{
+       border:1px solid #d0d0d0;
+       padding:1px;
+       background-color:white;
+       float:left;
+       margin-right:.4em;
+     }
+     .author a{font-weight:bold;color:black;}
+     .message{font-size:75%;}
+     .message a{color:black;}
+     .commit,#commit .commit_oneline .tree{
+       width:1%;
+       font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+       font-size:90%;
+       color:#808080;
+       border-left:1px solid #bedce7;
+       padding:.6em .5em;
+     }
+     .tree{border-right:1px solid #bedce7;}
+   }
+}
+
+p.explain{font-size:12px;color:#666;}
+
+table#toc{
+  border-top:1px solid #ddd;
+  border-spacing:0;
+  padding:0;
+  margin:10px 0;
+  width:100%;
+}
+
+#toc{
+  font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+  font-size:90%;
+
+  td{
+    padding:.4em 5px .4em 5px;
+    border-bottom:1px solid #ddd;
+  }
+
+  td.status{
+      width:20px;
+      padding-left:0;
+
+      .stat-icon{
+      display:block;
+      width:20px;
+      height:19px;
+      text-indent:-9999px;
+      background:url('../images/file_modes.png') 0 0 no-repeat;
+    }
+  }
+  td.modified .stat-icon{background-position:0 -50px;}
+  td.added    .stat-icon{background-position:0 0;}
+  td.removed  .stat-icon{background-position:0 -100px;}
+  td.renamed  .stat-icon{background-position:0 -150px;}
+
+  .diffstat{
+    padding-right:0;
+    width:1%;
+    white-space:nowrap;
+    text-align:right;
+
+    a{
+      text-decoration:none;
+      padding-right:15px;
+      background:url('../images/jump.png') 100% 5px no-repeat;
+    }
+    a:hover{ background-position:100% -45px;}
+
+    .summary{
+      font-family:helvetica,arial,freesans,clean,sans-serif;
+      text-align:right;
+      color:#666;
+      font-weight:bold;
+      font-size:11px;
+    }
+    .diffstat-bar{
+      display:inline-block;
+      width:50px;
+      height:9px;
+      text-decoration:none;
+      text-align:left;
+      background:url('../images/diffstat.png') 0 -100px repeat-x;
+    }
+    .plus{
+      float:left;
+      display:block;
+      width:10px;
+      height:9px;
+      text-indent:-9999px;
+      background:url('../images/diffstat.png') 0 0 repeat-x;
+    }
+    .minus{
+      float:left;
+      width:10px;
+      height:9px;
+      text-indent:-9999px;
+      background:url('../images/diffstat.png') 0 -50px repeat-x;
+    }
+  }
+}
+
+
+div#detail_content {
+  table {
+    font-size: inherit;
+    font: 100%;
+    line-height: 1.4;
+    border-spacing: 0px;
+  }
+  td, th {
+    display: table-cell;
+    vertical-align: inherit;
+  }
+  table pre{
+    margin:0;
+  }
+  ul.actions{
+    margin:0;
+  }
+}
+
+.file{ margin:15px 0; }
+.file>.highlight{
+  padding:5px;
+  background:#f8f8ff;
+  border:1px solid #d4d4e3;
+}
+.file>h3{
+  margin:0;
+  padding:5px;
+  font-size:12px;
+  color:#333;
+  text-shadow:1px 1px 0 rgba(255,255,255,0.5);
+  border:1px solid #ccc;
+  border-bottom:none;
+  background:url('../images/file_head.gif') 0 0 repeat-x #eee;
+}
+
+#files{
+  .fullscreen{position:inherit;}
+
+  .file,.file-box{
+    border:1px solid #ccc;
+    margin-bottom:1em;
+    position:relative;
+    background-color:#DDD;
+
+    .highlight{ border:none; padding:0; }
+    .meta{
+      padding:0 5px;
+      height:33px;
+      line-height:33px;
+      font-size:12px;
+      color:#333;
+      background:url('../images/file_head.gif') 0 0 repeat-x #eee;
+      text-shadow:1px 1px 0 rgba(255,255,255,0.5);
+      border-bottom:1px solid #ccc;
+      overflow:hidden;
+
+      .info{
+        float:left;
+        height:33px;
+        line-height:33px;
+        font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+
+        span{
+          padding-left:9px;
+          margin-left:5px;
+          background:url('../../images/modules/commit/action_separator.png') 0 50% no-repeat;
+        }
+
+        span:first-child, .icon+span{
+          background:transparent;
+          margin-left:0;
+          padding-left:0;
+        }
+
+        span.icon{
+          line-height:0;
+          float:left;
+          margin:5px 5px 0 0;
+          padding:3px;
+          background:#f7f7f7;
+          border:1px solid #ccc;
+          border-right-color:#e5e5e5;
+          border-bottom-color:#e5e5e5;
+          -webkit-border-radius:3px;
+          -moz-border-radius:3px;
+          border-radius:3px;
+        }
+      }
+    }
+    .actions{
+      float:right;
+      height:33px;
+      line-height:33px;
+
+      li{
+        list-style-type:none;
+        float:left;
+        margin:0 0 0 7px;
+        height:33px;
+        line-height:33px;
+        padding-left:9px;
+        font-size:11px;
+        background:url('../../images/modules/commit/action_separator.png') 0 50% no-repeat;
+      }
+
+      li:first-child{
+        background:transparent;
+        margin-left:0;
+        padding-left:0;
+      }
+      li a{ font-weight:bold; }
+      li code{ font-size:11px; }
+      li label input{ position:relative;top:1px; }
+    }
+
+    .data{
+      font-size:80%;
+      overflow:auto;
+      background-color:#f8f8ff;
+
+      .empty{
+        font-size:90%;
+        padding:5px 10px;
+        color:#777;
+       }
+      .highlight{padding:1em 0; }
+      .highlight div{padding-left:1em; }
+      .line_numbers{
+        background-color:#ececec;
+        color:#aaa;
+        padding:1em .5em;
+        border-right:1px solid #ddd;
+        text-align:right;
+
+        span{color:#aaa;cursor:pointer;}
+      }
+      td.line_numbers{
+        padding:0 .5em;
+        font-family:'Bitstream Vera Sans Mono','Courier',monospace;
+        font-size:12px;
+        -moz-user-select:none;
+        -khtml-user-select:none;
+        user-select:none;
+      }
+    }
+    .data pre, .line-data, .line-number{
+      font-family:'Bitstream Vera Sans Mono','Courier',monospace;
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .image{
+      text-align:center;
+      background-color:#ddd;
+      padding:30px;
+      position:relative;
+
+      table{
+        margin:0 auto;
+
+        td{
+          font-size:70%;
+          text-align:center;
+          color:#888;
+        }
+      }
+
+      .deleted-frame {background-color:white;border:1px solid #f77;}
+      .added-frame {border:1px solid #63c363;}
+      .added-frame, .deleted-frame{
+        border:1px solid #ddd;
+        display:inline-block;
+        line-height:0;
+        position:relative;
+      }
+
+      .image .border-wrap{
+        background-color:white;
+        border:1px solid #999;
+        display:inline-block;
+        line-height:0;
+        position:relative;
+      }
+
+      a{display:inline-block;line-height:0;}
+
+      table td{
+        vertical-align:top;
+        padding:0 5px;
+
+        img{max-width:100%;}
+      }
+
+      img, canvas{
+        background:url('../../images/modules/commit/trans_bg.gif') right bottom #eee;
+        max-width:600px;
+        border:1px solid #fff;
+      }
+      .view img, .view canvas{
+        background:url('../../images/modules/commit/trans_bg.gif') right bottom #eee;
+        position:relative;
+        top:0;
+        right:0;
+        max-width:inherit;
+      }
+    }
+
+    .glif{
+      background-color:#f0f0f0;
+      border-bottom:1px solid #dedede;
+      padding:.5em 0;
+
+      table{
+        margin:0 auto;
+
+        td{
+          font-size:70%;
+          text-align:center;
+          color:#888;
+        }
+
+        canvas{border:1px solid #ddd;background-color:white;}
+      }
+
+    }
+
+  }
+
+  .empty,.file-box .empty{background:none;}
+
+}

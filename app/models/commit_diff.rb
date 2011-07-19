@@ -86,20 +86,20 @@ class CommitDiff
       elsif parsing
         if line[0, 1] == "+"
           line_num_r += 1
-          l << Line.new(nil, line_num_r, line[1..-1].chomp, :add)
+          l << Line.new(nil, line_num_r, line.chomp, :add)
           a += 1
         elsif line[0, 1] == "-"
           line_num_l += 1
-          l << Line.new( line_num_l, nil, line[1..-1].chomp, :del )
+          l << Line.new( line_num_l, nil, line.chomp, :del )
           d += 1
         else
           line_num_r += 1
           line_num_l += 1
-          l << Line.new(line_num_l,line_num_r, line[1..-1].chomp, :eq)
+          l << Line.new(line_num_l,line_num_r, line.chomp, :eq)
         end
       end
     end
-   [l, a, d]
+    [l, a, d]
   end
 
 end
