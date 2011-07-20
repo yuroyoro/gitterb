@@ -67,7 +67,8 @@ class Commit
     msg << "Author: #{committer_name} <#{committer.email.force_encoding('utf-8')}>"
     msg << "Date:   #{committed_date}"
     msg << ""
-    message.force_encoding('utf-8').gsub(/"/, "”").each_line{|s| msg << "    #{s}" }
+    m = message.force_encoding('utf-8').gsub(/"/, "”") rescue message
+    m.each_line{|s| msg << "    #{s}" }
     msg.join("\n")
   end
 
