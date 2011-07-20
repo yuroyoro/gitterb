@@ -20,8 +20,6 @@ class Tree
 
     setup_commits
 
-    @root_commit = repo.git.log({:reverse => true, :pretty => '%H'},  '| head -1').chomp
-
     build
     @nodes, @points = to_nodes_and_points(opts)
     @edges = to_edges
@@ -35,20 +33,13 @@ class Tree
 
   def setup_commits
     @commits = @repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c, @repository) }.reverse
-    @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
-    @commits.each{|c|
-      parents = c.commit.parents.map{|p| @commits_hash[p.id]}.reject(&:nil?)
-      parents.each{|p| c.add_parent(p) }
-      parents.each{|p| p.add_child(c) }
-    }
-
     @main_commits_ids = @commits.map(&:id)
+    @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
 
-    branches_commits = {}
     @ommited_branches = {}
     @branches.each{|b|
       merge_base = @repo.git.merge_base({}, @target_branch_name, b.name).chomp
-      next unless @commits_hash.keys.include?(merge_base)
+      next unless @main_commits_ids.include?(merge_base)
 
       cs = @repo.commits_between(merge_base, b.name)
       if cs.size > @max_count
@@ -57,14 +48,16 @@ class Tree
         @ommited_branches[cs.last.id].add_branch(b)
       end
 
-      cs.map{|c| Commit.new(c, @repository)}.each{|c|
-        branches_commits[c.id] ||= c
+      cs.reject{|c| @commits_hash[c.id]}.map{|c| Commit.new(c, @repository)}.uniq.each{|c|
+        next if @commits_hash[c.id]
+        @commits << c
+        @commits_hash[c.id] ||= c
       }
     }
 
-    @commits += branches_commits.values
-    branches_commits.values.each{|c| @commits_hash[c.id] = c }
-    branches_commits.values.each{|c|
+    @commits.uniq!
+
+    @commits.each{|c|
       parents = c.commit.parents.map{|p| @commits_hash[p.id]}.reject(&:nil?)
       parents.each{|p| c.add_parent(p) }
       parents.each{|p| p.add_child(c) }
@@ -83,7 +76,7 @@ class Tree
 
     branches = repo.heads.select{|h| @commits_hash.keys.include?(h.commit.id)}
     tags = repo.tags.select{|t| @commits_hash.keys.include?(t.commit.id)}
-    start_commits = @commits.select{|c| c.parents.empty? && c.id != @root_commit}.map(&:id)
+    start_commits = @commits.select{|c| c.parents.empty? && c.commit.parents.present?}.map(&:id)
 
     nodes = []
     points = []
@@ -171,7 +164,7 @@ class Tree
     branches = repo.heads.select{|h| ids.include?(h.commit.id)}
     tags = repo.tags.select{|t| ids.include?(t.commit.id)}
     refs = branches + tags
-    start_commits = @commits.select{|c| c.parents.empty? && c.id != @root_commit}
+    start_commits = @commits.select{|c| c.parents.empty? && c.commit.parents.present? }
 
     all_commits = @lanes.map(&:commits).flatten.reject(&:nil?)
     all_commits_ids = all_commits.map(&:id)

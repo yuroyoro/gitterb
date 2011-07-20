@@ -3,7 +3,7 @@
 class Commit
   extend Forwardable
 
-  ATTRIBUTES = %w[ id tree author authored_date committer committed_date message short_message author_string ]
+  ATTRIBUTES = %w[tree author authored_date committer committed_date message short_message author_string ]
 
   def_delegators :@commit,*ATTRIBUTES
   attr_reader :commit, :repo, :parents, :children
@@ -13,6 +13,23 @@ class Commit
     @commit = commit
     @parents = []
     @children = []
+  end
+
+  def id
+    @commit.id
+  end
+
+  def eql?(other)
+    case other
+    when Commit
+      id == other.id
+    else
+      false
+    end
+  end
+
+  def hash
+    id.hash
   end
 
   def to_s
@@ -90,7 +107,7 @@ class Commit
 
   def diffs
     if commit.parents.empty?
-      @diffs ||= @commit.diffs.each{|d| CommitDiff.new(d) }
+       @commit.diffs.map{|d| CommitDiff.new(d) }
     else
       text = @repo.repo.git.native("diff", {:full_index => true, :C => true}, commit.parents.first.id, id)
       Grit::Diff.list_from_string(commit.repo, text).map{|d| CommitDiff.new(d)}
