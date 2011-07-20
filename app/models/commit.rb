@@ -1,3 +1,5 @@
+# coding: utf-8
+
 class Commit
   extend Forwardable
 
@@ -58,13 +60,14 @@ class Commit
     @stats ||= Grit::CommitStats.find_all(repo.repo, id, options = {:m => true, :max_count => 1}).first.last
   end
 
+
   def commit_log
     msg = []
     msg << "Commit #{id}"
     msg << "Author: #{committer_name} <#{committer.email.force_encoding('utf-8')}>"
     msg << "Date:   #{committed_date}"
     msg << ""
-    message.force_encoding('utf-8').each_line{|s| msg << "    #{s}" }
+    message.force_encoding('utf-8').gsub(/"/, "”").each_line{|s| msg << "    #{s}" }
     msg.join("\n")
   end
 
