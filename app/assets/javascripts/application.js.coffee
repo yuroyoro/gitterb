@@ -116,8 +116,12 @@ $ ->
       vis.panEnabled(true)
 
       vis.addListener("click", "nodes",  (e) ->
+
         node = e.target
         sha_1 = node.data.sha_1
+        if not sha_1
+          return
+
         detail = $('div#detail')
         x = e.mouseX
 
