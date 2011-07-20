@@ -45,20 +45,35 @@ class Tree
     @main_commits_ids = @commits.map(&:id)
 
     branches_commits = {}
+    @ommited_branches = {}
     @branches.each{|b|
       merge_base = @repo.git.merge_base({}, @target_branch_name, b.name).chomp
       next unless @commits_hash.keys.include?(merge_base)
 
-      @repo.commits_between(merge_base, b.name).map{|c| Commit.new(c, @repository)}.each{|c|
+      cs = @repo.commits_between(merge_base, b.name)
+      if cs.size > @max_count
+        cs = cs[0..@max_count]
+        @ommited_branches[cs.last.id] ||= DummyCommit.new
+        @ommited_branches[cs.last.id].add_branch(b)
+      end
+
+      cs.map{|c| Commit.new(c, @repository)}.each{|c|
         branches_commits[c.id] ||= c
       }
     }
+
     @commits += branches_commits.values
     branches_commits.values.each{|c| @commits_hash[c.id] = c }
     branches_commits.values.each{|c|
       parents = c.commit.parents.map{|p| @commits_hash[p.id]}.reject(&:nil?)
       parents.each{|p| c.add_parent(p) }
       parents.each{|p| p.add_child(c) }
+    }
+
+    @ommited_branches.each{|sha_1, dc|
+      parent = @commits_hash[sha_1]
+      parent.add_child(dc)
+      dc.add_parent(parent)
     }
   end
 
@@ -78,8 +93,9 @@ class Tree
         { :refs=> branches.select{|b| b.commit.id == c.id} + tags.select{|t| t.commit.id == c.id},
           :start    => start_commits.include?(c.id),
           :main_line => @main_commits_ids.include?(c.id),
+          :dummy => c.respond_to?(:dummy?),
           :divergence =>
-             (c.parents.empty? or c.parents.size > 1 or c.children.empty? or c.children.size > 1),
+             (c.parents.empty? or c.parents.size > 1 or c.children.empty? or c.children.size > 1) && (not c.respond_to?(:dummy?)),
           :node => c.to_node(node_size)
         } if c
       }
@@ -95,7 +111,7 @@ class Tree
     point_x = 0
     (0..width).each{|x|
       elems = lanes.map{|l| l[x]}
-      narrow = (not elems.reject(&:nil?).any?{|e| e[:refs].present? or e[:start] or e[:divergence]})
+      narrow = (not elems.reject(&:nil?).any?{|e| e[:refs].present? or e[:start] or e[:divergence]} )
 
       w = narrow ? node_size / 2 : node_size
       point_x += node_size / 2 unless narrow
@@ -133,6 +149,7 @@ class Tree
         node[:color] = "#FFFFCC" if e[:main_line]
         node[:color] = "#DDFFFF" if e[:divergence] or e[:start]
         node[:color] = "#FFDDDD" if e[:refs].present?
+        node[:color] = "#CCCCCC" if e[:dummy]
 
         unless e[:refs].present? or e[:start] or e[:divergence]
           node[:size] = node_size / 2
@@ -245,11 +262,12 @@ class Tree
 
   def to_edge(src, dst)
     color = @main_commits_ids.include?(src.id) ? '#999999' : '#CCCCCC'
-    { :id => "#{src.id[0..7]}_#{dst.id[0..7]}",
+    style = (src.respond_to?(:dummy?) || dst.respond_to?(:dummy) ) ? "DOT" : "SOLID"
+    { :id => "#{src.short_id}_#{dst.short_id}",
       :source => src.short_id, :target => dst.short_id,
       :color => color,
       :directed => true,
-      :style => 'SOLID' }
+      :style => style }
   end
 
   def refs_to_edge(r)
@@ -343,6 +361,47 @@ class Tree
 
   end
 
+end
+
+class DummyCommit < Commit
+
+  attr_reader :branches
+  def initialize
+    @branches = []
+    @parents = []
+    @children = []
+  end
+
+  def id
+    "dummy_#{parents.first.short_id}"
+  end
+
+  def short_id
+    "dummy_#{parents.first.short_id}"
+  end
+
+  def dummy?
+    true
+  end
+
+  def add_branch(b)
+    @branches << b
+  end
+
+  def to_node(node_size = 100)
+    { :id => id,
+      :shape => "TRIANGLE",
+      :color => "#F5F5F5",
+      :borderColor => "#2D2D2D",
+      :labelFontColor => "#2D2D2D",
+      :size => node_size ,
+      :fontsize => 20,
+      :label => "...",
+      :anchor => "center",
+      :v_anchor => "top",
+      :tips => "more commits for #{branches.map(&:name).join(", ")}"
+    }
+  end
 end
 
 
