@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc4'
+gem 'rails', '3.1.0.rc5'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -9,9 +9,10 @@ gem 'rails', '3.1.0.rc4'
 
 # Use unicorn as the web server
 gem 'unicorn'
+gem 'passenger'
 
 # Asset template engines
-gem 'sass-rails', "3.1.0.rc4"
+gem 'sass-rails', "3.1.0.rc5"
 gem 'coffee-script'
 gem 'uglifier'
 
@@ -19,6 +20,9 @@ gem 'uglifier'
 gem 'capistrano'
 gem 'capistrano-ext'
 gem 'capistrano_colors'
+
+gem 'execjs'
+gem 'therubyracer'
 
 gem 'haml-rails'
 gem 'grit'
