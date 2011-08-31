@@ -139,7 +139,11 @@ class Tree
           points <<  {:id => s_id, :x => point_x - 150, :y => point_y }
         end
 
-        node[:color] = "#FFFFCC" if e[:main_line]
+        if e[:main_line]
+          node[:color] = "#FFFFCC"
+          node[:borderColor] = "#FF8C00"
+        end
+
         node[:color] = "#DDFFFF" if e[:divergence] or e[:start]
         node[:color] = "#FFDDDD" if e[:refs].present?
         node[:color] = "#CCCCCC" if e[:dummy]
