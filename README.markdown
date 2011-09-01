@@ -1,7 +1,9 @@
 Gitterb The Graphical Git Repository Viewer.
 ===========================================================================
 
-The Graphical Git reporsitory Viewer Made by Ruby on Rails 3.1.0.rc4
+The Graphical Git reporsitory Viewer Made by Ruby on Rails 3.1.0.
+
+DEMO Site is [HERE](http://gitterb.yuroyoro.net/)
 
 ## Setup
 
@@ -32,7 +34,7 @@ start server and visit 'http://localhsost:3000'
 
 ## Usage and Screen shots
 
-<img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screeen_shots/screen_shot1.png' width='600'/>
+<img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screen_shots/screen_shot1.png' width='600'/>
 
 The commit-tree of the master branch is displayed first. a round figure shows Commit object.
 100 Commits from master's HEAD is displayed,
@@ -42,12 +44,12 @@ to change forcused branch from 'master', select the branch at header's pulldown.
 turn off the 'all' checkbox,  then other branch's Commits are hidden.
 max-count is maximum number of commits to output.
 
-<img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screeen_shots/screen_shot2.png' width='600'/>
+<img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screen_shots/screen_shot2.png' width='600'/>
 
 when the mouse over on Commit,  the commit summary is popuped.
 and click commit, details shown left or right side. double click on the details area, it's to be hide.
 
-<img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screeen_shots/screen_shot3.png' width='600'/>
+<img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screen_shots/screen_shot3.png' width='600'/>
 
 ## License
 
