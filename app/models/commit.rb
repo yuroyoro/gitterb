@@ -81,8 +81,8 @@ class Commit
   def commit_log
     msg = []
     msg << "Commit #{id}"
-    msg << "Author: #{committer_name} <#{committer.email.force_encoding('utf-8')}>"
-    msg << "Date:   #{committed_date}"
+    msg << "Author: #{author_name} <#{author.email.force_encoding('utf-8')}>"
+    msg << "Date:   #{authored_date}"
     msg << ""
     m = message.force_encoding('utf-8').gsub(/"/, "”") rescue message
     m.each_line{|s| msg << "    #{s}" }
