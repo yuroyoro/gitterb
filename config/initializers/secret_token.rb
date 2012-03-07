@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Gitterb::Application.config.secret_token = '689c9544ac5c8b2eadb5097ca97f56151a7cda511f93dd0231717385c34320db89c389a83bd156268852b7c5674fed126d5791c80aefeec6ec5248f570b86d27'
+Gitterb::Application.config.secret_token = '540fc4a8d72d79c6b25394824b95e37a6b99514e2889902badaeeaad2896ede31dc2ae3bf11998a708f50f31f077de54fedb2b405aa830e8a545c4896682b799'
