@@ -1,94 +1,73 @@
-require 'grit'
-
 class Tree
 
-  attr_accessor :repo, :repository, :commits, :max_count, :branch, :target_branch_name,  :nodes, :edges, :points
+  attr_accessor :repo, :commits, :max_count, :branch, :target_branch_name,  :nodes, :edges, :points
 
   def initialize(repository, target_branch_name = 'master',  opts = {})
-    @repository = repository
-
-    @repo = @repository.repo
+    @repo = repository
     @max_count= opts[:max_count] || 300
     @max_count = false if max_count < 0
     @target_branch_name  = target_branch_name
     @branch = branch_of(@target_branch_name)
     if opts[:all]
-      @branches = @repo.heads.reject{|h| h.name == @target_branch_name}
+      @branches = @repo.branches.reject{|b| b.name == @target_branch_name}
     else
       @branches = (opts[:brances] || []).map{|b| branch_of(b)}
     end
 
-    setup_commits
+    @commits = repo.commits(@target_branch_name, @max_count).reverse
+    @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
+    @commits.each{|c|
+      parents = c.parent_commits.map{|p| @commits_hash[p.id]}.reject(&:nil?)
+      parents.each{|p| c.add_parent(p) }
+      parents.each{|p| p.add_child(c) }
+    }
+
+    branches_commits = {}
+    @branches.each{|b|
+      merge_base = @repo.repo.merge_base(@target_branch_name, b.name).chomp
+      next unless @commits_hash[merge_base]
+
+      @repo.commits_between(merge_base, b.name).each{|c|
+        next if  @commits_hash[c.id]
+        branches_commits[c.id] ||= c
+      }
+    }
+    @commits += branches_commits.values
+    branches_commits.values.each{|c| @commits_hash[c.id] = c }
+    branches_commits.values.each{|c|
+      parents = c.parent_commits.map{|p| @commits_hash[p.id]}.reject(&:nil?)
+      parents.each{|p| c.add_parent(p) }
+      parents.each{|p| p.add_child(c) }
+    }
 
     build
     @nodes, @points = to_nodes_and_points(opts)
     @edges = to_edges
   end
 
-  def branch_of(branch_name)
-    @repo.get_head(branch_name)
+  def branch_of(name)
+    @repo.branche_of(name)
   end
 
   private
-
-  def setup_commits
-    @commits = @repo.commits(@target_branch_name, @max_count).map{|c| Commit.new(c, @repository) }.reverse
-    @main_commits_ids = @commits.map(&:id)
-    @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
-
-    @ommited_branches = {}
-    @branches.each{|b|
-      merge_base = @repo.git.merge_base({}, @target_branch_name, b.name).chomp
-      next unless @main_commits_ids.include?(merge_base)
-
-      cs = @repo.commits_between(merge_base, b.name)
-      if cs.size > @max_count
-        cs = cs[0..@max_count]
-        @ommited_branches[cs.last.id] ||= DummyCommit.new
-        @ommited_branches[cs.last.id].add_branch(b)
-      end
-
-      cs.reject{|c| @commits_hash[c.id]}.map{|c| Commit.new(c, @repository)}.uniq.each{|c|
-        next if @commits_hash[c.id]
-        @commits << c
-        @commits_hash[c.id] ||= c
-      }
-    }
-
-    @commits.uniq!
-
-    @commits.each{|c|
-      parents = c.commit.parents.map{|p| @commits_hash[p.id]}.reject(&:nil?)
-      parents.each{|p| c.add_parent(p) }
-      parents.each{|p| p.add_child(c) }
-    }
-
-    @ommited_branches.each{|sha_1, dc|
-      parent = @commits_hash[sha_1]
-      parent.add_child(dc)
-      dc.add_parent(parent)
-    }
-  end
 
   def to_nodes_and_points(opts = {})
     node_size = opts[:node_size].try(&:to_i) || 100
     mergin = opts[:mergin].try(&:to_i) ||  50
 
-    branches = repo.heads.select{|h| @commits_hash.keys.include?(h.commit.id)}
-    tags = repo.tags.select{|t| @commits_hash.keys.include?(t.commit.id)}
-    start_commits = @commits.select{|c| c.parents.empty? && c.commit.parents.present?}.map(&:id)
+    branches = repo.branches
+    tags = repo.tags.select{|t| @commits_hash.keys.include?(t.target.oid)}
+    start_commits = @commits.select{|c| c.parents.empty? }.map(&:id)
 
     nodes = []
     points = []
 
     lanes = @lanes.reverse.map{|lane|
       lane.commits.map{|c|
-        { :refs=> branches.select{|b| b.commit.id == c.id} + tags.select{|t| t.commit.id == c.id},
+        { :refs=> branches.select{|b| b.target.oid == c.id} + tags.select{|t| t.target.oid == c.id},
           :start    => start_commits.include?(c.id),
-          :main_line => @main_commits_ids.include?(c.id),
-          :dummy => c.respond_to?(:dummy?),
           :divergence =>
-             (c.parents.empty? or c.parents.size > 1 or c.children.empty? or c.children.size > 1) && (not c.respond_to?(:dummy?)),
+             (c.parents.empty? or c.parents.size > 1 or c.children.empty? or c.children.size > 1),
           :node => c.to_node(node_size)
         } if c
       }
@@ -104,7 +83,7 @@ class Tree
     point_x = 0
     (0..width).each{|x|
       elems = lanes.map{|l| l[x]}
-      narrow = (not elems.reject(&:nil?).any?{|e| e[:refs].present? or e[:start] or e[:divergence]} )
+      narrow = (not elems.reject(&:nil?).any?{|e| e[:refs].present? or e[:start] or e[:divergence]})
 
       w = narrow ? node_size / 2 : node_size
       point_x += node_size / 2 unless narrow
@@ -139,14 +118,8 @@ class Tree
           points <<  {:id => s_id, :x => point_x - 150, :y => point_y }
         end
 
-        if e[:main_line]
-          node[:color] = "#FFFFCC"
-          node[:borderColor] = "#FF8C00"
-        end
-
         node[:color] = "#DDFFFF" if e[:divergence] or e[:start]
         node[:color] = "#FFDDDD" if e[:refs].present?
-        node[:color] = "#CCCCCC" if e[:dummy]
 
         unless e[:refs].present? or e[:start] or e[:divergence]
           node[:size] = node_size / 2
@@ -165,10 +138,10 @@ class Tree
 
   def to_edges
     ids = @lanes.map(&:commits).flatten.reject(&:nil?).map(&:id)
-    branches = repo.heads.select{|h| ids.include?(h.commit.id)}
-    tags = repo.tags.select{|t| ids.include?(t.commit.id)}
+    branches = repo.branches.select{|h| ids.include?(h.target.oid)}
+    tags = repo.tags.select{|t| ids.include?(t.target.oid)}
     refs = branches + tags
-    start_commits = @commits.select{|c| c.parents.empty? && c.commit.parents.present? }
+    start_commits = @commits.select{|c| c.parents.empty? }
 
     all_commits = @lanes.map(&:commits).flatten.reject(&:nil?)
     all_commits_ids = all_commits.map(&:id)
@@ -178,7 +151,6 @@ class Tree
       { :id => "s_#{c.short_id}_#{c.short_id}",
         :target => c.short_id, :source => "s_#{c.short_id}",
         :directed => false,
-        :color => '#CCCCCC',
         :style => 'DOT'}
     }
   end
@@ -225,8 +197,7 @@ class Tree
     pos = lanes.index(lane)
     next_col = col + 1
 
-    next_lane = lanes[(pos + 1)..(lanes.size)].find(&:open?) || lanes[0..pos].reverse.find(&:open?)
-    if next_lane
+    if next_lane = lanes[(pos + 1)..(lanes.size)].find(&:open?)
       next_lane.add(src, commit, next_col)
     else
       lanes <<  Lane.new(src, commit, next_col)
@@ -237,10 +208,10 @@ class Tree
     color = nil
     ref_id = nil
     case r
-    when Grit::Head
+    when Rugged::Branch
       color = '#FF3333'
       ref_id = "b_#{r.name}"
-    when Grit::Tag
+    when Rugged::Tag
       color = '#3333FF'
       ref_id = "t_#{r.name}"
     end
@@ -258,26 +229,22 @@ class Tree
   end
 
   def to_edge(src, dst)
-    color = @main_commits_ids.include?(src.id) ? '#999999' : '#CCCCCC'
-    style = (src.respond_to?(:dummy?) || dst.respond_to?(:dummy) ) ? "DOT" : "SOLID"
-    { :id => "#{src.short_id}_#{dst.short_id}",
+    { :id => "#{src.id[0..7]}_#{dst.id[0..7]}",
       :source => src.short_id, :target => dst.short_id,
-      :color => color,
       :directed => true,
-      :style => style }
+      :style => 'SOLID' }
   end
 
   def refs_to_edge(r)
     case r
-    when Grit::Head
+    when Rugged::Branch
       ref_id = "b_#{r.name}"
-    when Grit::Tag
+    when Rugged::Tag
       ref_id = "t_#{r.name}"
     end
-    { :id => "#{ref_id}_#{r.commit.id[0..7]}",
-      :target => ref_id, :source => r.commit.id[0..7],
+    { :id => "#{ref_id}_#{r.target.oid[0..7]}",
+      :target => ref_id, :source => r.target.oid[0..7],
       :directed => false,
-      :color => '#CCCCCC',
       :style => 'DOT'}
   end
 
@@ -358,47 +325,6 @@ class Tree
 
   end
 
-end
-
-class DummyCommit < Commit
-
-  attr_reader :branches
-  def initialize
-    @branches = []
-    @parents = []
-    @children = []
-  end
-
-  def id
-    "dummy_#{parents.first.short_id}"
-  end
-
-  def short_id
-    "dummy_#{parents.first.short_id}"
-  end
-
-  def dummy?
-    true
-  end
-
-  def add_branch(b)
-    @branches << b
-  end
-
-  def to_node(node_size = 100)
-    { :id => id,
-      :shape => "TRIANGLE",
-      :color => "#F5F5F5",
-      :borderColor => "#2D2D2D",
-      :labelFontColor => "#2D2D2D",
-      :size => node_size ,
-      :fontsize => 20,
-      :label => "...",
-      :anchor => "center",
-      :v_anchor => "top",
-      :tips => "more commits for #{branches.map(&:name).join(", ")}"
-    }
-  end
 end
 
 

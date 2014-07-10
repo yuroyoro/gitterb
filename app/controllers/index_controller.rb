@@ -5,6 +5,6 @@ class IndexController < ApplicationController
     @all = params[:all].nil? ? true : params[:all] != 'false'
     @max_count = params[:max_count].try(:to_i) || 100
     @max_count = 100 unless @max_count > 0
-    @branches = grit_repo.heads.map(&:name).sort
+    @branches = repository.branches.map(&:name).sort
   end
 end

@@ -10,7 +10,7 @@ DEMO Site is [HERE](http://gitterb.yuroyoro.net/)
 Install dependencies gems using Bundler.
 
     gem install bundler # if you haven't
-    bundle install ./vendor/bundle
+    bundle install --path=vendor/bundle --binstubs=vendor/bin
 
 copy config/iniproperties/repositories.rb.sample to config/initializers/repositories.rb
 
@@ -18,10 +18,10 @@ copy config/iniproperties/repositories.rb.sample to config/initializers/reposito
 
 and edit config/initializers/repositories.rb and specify git reporsitory path(absolute path) .
 
-    # pass to reporsitory path(absolute path).
+    # set reporsitory path(absolute path).
     Gitterb::Application.add_repository( '/path/to/repository1')
 
-    # pass to repositoy pass and some options(name, issue trackers url and revisions url...).
+    # set repositoy pass and some options(name, issue trackers url and revisions url...).
     Gitterb::Application.add_repository( '/path/to/repository2',
       :name => 'repo_name2',
       :ticket_url => 'http://redmine.example.com/issues/%s',
@@ -30,13 +30,13 @@ and edit config/initializers/repositories.rb and specify git reporsitory path(ab
 
 start server and visit 'http://localhsost:3000'
 
-    script/rails server
+    rails s
 
 ## Usage and Screen shots
 
 <img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screen_shots/screen_shot1.png' width='600'/>
 
-The commit-tree of the master branch is displayed first. a round figure shows Commit object.
+The commit-tree of the master branch is displayed first. A round figure shows Commit object.
 100 Commits from master's HEAD is displayed,
 and Branch/tag that can reach to master's commits displayed is additionally output, too.
 
