@@ -1,7 +1,13 @@
-Gitterb::Application.add_repository( '/path/to/repository1')
-Gitterb::Application.add_repository( '/path/to/repository2',
-  :name => 'repo_name2',
-  :ticket_url => 'http://redmine.example.com/issues/%s',
-  :rev_url => 'http://redmine.example.com/projects/someproject/repository/revisions/%s'
-)
+Rails.application.config.repositories = [
+  # set reporsitory path(absolute path).
+  # Repository.new('/path/to/yoru_repository_1)',
+
+  # set repositoy pass and some options(name, issue trackers url and revisions url...).
+  # Gitterb::Application.add_repository( '/path/to/repository2',
+  # :name => 'repo_name2',
+  # :ticket_url => 'http://redmine.example.com/issues/%s',
+  # :rev_url => 'http://redmine.example.com/projects/someproject/repository/revisions/%s'
+  #  ),
+
+]
 
