@@ -1,0 +1,12 @@
+Rails.application.config.repositories = [
+  Repository.new('/opt/gitterb',
+    :name => 'Gitterb',
+    :ticket_url => 'https://github.com/yuroyoro/gitterb/issues/%s',
+    :rev_url => 'https://github.com/yuroyoro/gitterb/commit/%s'
+  ),
+  Repository.new('/opt/rails',
+    :name => 'Rails',
+    :ticket_url => 'https://github.com/rails/rails/issues/%s',
+    :rev_url => 'https://github.com/rails/rails/commit/%s'
+  ),
+]
