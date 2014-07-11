@@ -16,25 +16,28 @@ class Repository
     @file_url = opts[:file_url]
   end
 
-  def self.repos
-    return @repos if @repos
-    @repos = Gitterb::Application.repositories.map{|path, opts| Repository.new(path, opts) }
-  end
+  class << self
 
-  def self.repo_names
-    repos.map(&:name)
-  end
+    def repos
+      return @repos if @repos
+      @repos = Rails.application.config.repositories
+    end
 
-  def self.find(repo_name)
-    repos.find{|r| r.name == repo_name }
-  end
+    def repo_names
+      repos.map(&:name)
+    end
 
-  def self.first
-    repos.first
-  end
+    def find(repo_name)
+      repos.find{|r| r.name == repo_name }
+    end
 
-  def self.find_all
-    repos
+    def first
+      repos.first
+    end
+
+    def find_all
+      repos
+    end
   end
 
   def tags
