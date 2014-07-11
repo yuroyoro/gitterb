@@ -1,7 +1,7 @@
 Gitterb The Graphical Git Repository Viewer.
 ===========================================================================
 
-The Graphical Git reporsitory Viewer Made by Ruby on Rails 3.1.0.
+The Graphical Git reporsitory Viewer.
 
 DEMO Site is [HERE](http://gitterb.yuroyoro.net/)
 
@@ -17,6 +17,7 @@ copy config/iniproperties/repositories.rb.sample to config/initializers/reposito
     cp config/initializers/repositories.rb.sample config/initializers/repositories.rb
 
 and edit config/initializers/repositories.rb and specify git reporsitory path(absolute path) .
+
   Rails.application.config.repositories = [
     # set reporsitory path(absolute path).
     Repository.new('/path/to/yoru_repository_1)',
@@ -52,6 +53,17 @@ when the mouse over on Commit,  the commit summary is popuped.
 and click commit, details shown left or right side. double click on the details area, it's to be hide.
 
 <img src='https://github.com/yuroyoro/gitterb/raw/master/doc/screen_shots/screen_shot3.png' width='600'/>
+
+## Docker Image
+
+A Docker Image for this application is distributed [HERE](https://registry.hub.docker.com/u/yuroyoro/gitterb/)
+
+   docker pull yuroyoro/gitterb
+   docker run -d -p 3000:3000 -t yuroyoro/gitterb
+
+If you use boot2docker, You should connect to the container via ssh portforwading on boot2docker virtual machine.
+
+   ssh -N -L 3000:127.0.0.1:3000 docker@localhost -p 2022
 
 ## License
 
