@@ -58,12 +58,12 @@ and click commit, details shown left or right side. double click on the details 
 
 A Docker Image for this application is distributed [HERE](https://registry.hub.docker.com/u/yuroyoro/gitterb/)
 
-   docker pull yuroyoro/gitterb
-   docker run -d -p 3000:3000 -t yuroyoro/gitterb
+    docker pull yuroyoro/gitterb
+    docker run -d -p 3000:3000 -t yuroyoro/gitterb
 
 If you use boot2docker, You should connect to the container via ssh portforwading on boot2docker virtual machine.
 
-   ssh -N -L 3000:127.0.0.1:3000 docker@localhost -p 2022
+    ssh -N -L 3000:127.0.0.1:3000 docker@localhost -p 2022
 
 ## License
 
