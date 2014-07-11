@@ -111,7 +111,9 @@ $ ->
     vis.ready( ->
       vis.zoom(0.5)
       target_branch = "b_" + json["target_branch"] || 'master'
+
       target = vis.node(target_branch)
+
       vis.panBy( target.x * 0.95 , target.y * 0.7)
       vis.panEnabled(true)
 

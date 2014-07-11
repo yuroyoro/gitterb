@@ -1,4 +1,4 @@
-#commit.single_commit
+#commit.silinesngle_commit
   .group
     .envelope.commit
       .human
@@ -19,7 +19,7 @@
         = link_to_commit(commit, 20)
         %br
         = raw envelope_title("tree")
-        = commit.tree.id[0..20]
+        = commit.tree.oid[0..20]
         %br
         - commit.parents.each do |p|
           = raw envelope_title("parent")

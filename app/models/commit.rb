@@ -3,7 +3,7 @@
 class Commit
   extend Forwardable
 
-  ATTRIBUTES = %w[tree author authored_date committer committed_date message short_message author_string ]
+  ATTRIBUTES = %w[tree author committer message short_message author_string ]
 
   def_delegators :@commit,*ATTRIBUTES
   attr_reader :commit, :repo, :parents, :children
@@ -16,7 +16,11 @@ class Commit
   end
 
   def id
-    @commit.id
+    @commit.oid
+  end
+
+  def parent_commits
+    @commit.parents.map{|c| Commit.new(c, repo) }
   end
 
   def eql?(other)
@@ -58,11 +62,15 @@ class Commit
   end
 
   def author_name
-    author.name.force_encoding('utf-8')
+    author[:name].force_encoding('utf-8')
+  end
+
+  def authored_date
+    author[:time]
   end
 
   def committer_name
-    committer.name.force_encoding('utf-8')
+    committer[:name].force_encoding('utf-8')
   end
 
   def find_parents
@@ -70,18 +78,18 @@ class Commit
   end
 
   def find_children
-    repo.repo.git.rev_list({:all => true, :parents => true},  %q!|  grep " 1aee0e024f85f6921a61eb3c578f18dcadca170e" | cut -d ' ' -f1!).split("\n").map{|sha_1| repo.commit(sha_1) }
+    # repo.repo.git.rev_list({:all => true, :parents => true},  %q!|  grep " 1aee0e024f85f6921a61eb3c578f18dcadca170e" | cut -d ' ' -f1!).split("\n").map{|sha_1| repo.commit(sha_1) }
   end
 
-  def stats
-    @stats ||= Grit::CommitStats.find_all(repo.repo, id, options = {:m => true, :max_count => 1}).first.last
-  end
+  # def stats
+    # @stats ||= Grit::CommitStats.find_all(repo.repo, id, options = {:m => true, :max_count => 1}).first.last
+  # end
 
 
   def commit_log
     msg = []
     msg << "Commit #{id}"
-    msg << "Author: #{author_name} <#{author.email.force_encoding('utf-8')}>"
+    msg << "Author: #{author_name} <#{author[:email].force_encoding('utf-8')}>"
     msg << "Date:   #{authored_date}"
     msg << ""
     m = message.force_encoding('utf-8').gsub(/"/, "”") rescue message
@@ -105,12 +113,23 @@ class Commit
     }
   end
 
-  def diffs
+  def diff
     if commit.parents.empty?
-       @commit.diffs.map{|d| CommitDiff.new(d) }
+       commit.diff
     else
-      text = @repo.repo.git.native("diff", {:full_index => true, :C => true}, commit.parents.first.id, id)
-      Grit::Diff.list_from_string(commit.repo, text).map{|d| CommitDiff.new(d)}
+      commit.diff(commit.parents.first)
     end
+  end
+
+  def diffs
+    diff.patches.map{|p| CommitDiff.new(p) }
+  end
+
+  def deltas
+    diff.deltas
+  end
+
+  def patches
+    diff.patches
   end
 end

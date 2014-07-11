@@ -4,3 +4,4 @@ log/*.log
 tmp/
 vendor/bundle
 config/initializers/repositories.rb
+vendor/bin/

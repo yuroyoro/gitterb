@@ -10,9 +10,18 @@
   .data.highlight
     %table{ :cellspacing => "0", :cellpadding => "0", :width => "100%" }
       %tbody
-        - diff.lines.each_with_index do |line, n|
-          %tr{ "data-position" => n }
-            %td{:id => "L#{index}L#{n}", :class => "line_numbers linkable-line-number"}= to_line_num_l(line)
-            %td{:id => "L#{index}L#{n}", :class => "line_numbers linkable-line-number"}= to_line_num_r(line)
-            %td{ :width => "100%" }
-              %pre= raw to_html_line(line)
+        - diff.patch.hunks.each_with_index do |hunk, hn|
+          - hunk.lines.each_with_index do |line, n|
+            %tr{ "data-position" => n }
+              %td{:id => "L#{index}L#{n}", :class => "line_numbers linkable-line-number"}= line.old_lineno < 0 ? "" : line.old_lineno
+              %td{:id => "L#{index}L#{n}", :class => "line_numbers linkable-line-number"}= line.new_lineno < 0 ? "" : line.new_lineno
+              %td{ :width => "100%" }
+                %pre= raw to_html_line(line)
+          - unless hn == diff.patch.hunk_count - 1
+            %tr
+              %td{:class => "line_numbers linkable-line-number"}= "..."
+              %td{:class => "line_numbers linkable-line-number"}= "..."
+              %td{ :width => "100%" }
+                %pre
+                  %div.gc= "..."
+

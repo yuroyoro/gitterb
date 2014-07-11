@@ -1,7 +1,7 @@
 module CommitHelper
 
   def gravator_link(commit, type = :author)
-    "http://www.gravatar.com/avatar/#{Digest::MD5.new.update(commit.send(type).email).to_s}.png"
+    "http://www.gravatar.com/avatar/#{Digest::MD5.new.update(commit.send(type)[:email]).to_s}.png"
   end
 
   def time_ago_in_words(time)
@@ -38,7 +38,7 @@ module CommitHelper
 
     msg = []
     msg << "Commit #{link_to_commit(commit)}"
-    msg << "Author: #{commit.committer.name.force_encoding('utf-8')} <#{commit.committer.email.force_encoding('utf-8')}>"
+    msg << "Author: #{commit.committer[:name].force_encoding('utf-8')} <#{commit.committer[:email].force_encoding('utf-8')}>"
     msg << "Date:   #{commit.committed_date}"
     msg << ""
     msg << message_with_link(commit)
@@ -72,12 +72,25 @@ module CommitHelper
   end
 
   def commit_explain(commit)
-    diffs = commit.diffs
-    additions = diffs.map(&:additions).sum
-    deletions = diffs.map(&:deletions).sum
-    "Showing #{diffs.size} changed file#{diffs.size == 1 ? "" : "s"} with " +
+    patches = commit.patches
+    lines = patches.flat_map(&:hunks).flat_map(&:lines)
+    additions = lines.select(&:addition?).count
+    deletions = lines.select(&:deletion?).count
+    "Showing #{patches.size} changed file#{patches.size == 1 ? "" : "s"} with " +
       [ additions > 0 ? "#{additions.to_s} addition#{additions == 1 ? "" : "s"}" : nil,
         deletions > 0 ? "#{deletions.to_s} deletion#{deletions == 1 ? "" : "s"}" : nil].reject(&:nil?).join(" and ") + "."
+  end
+
+
+  def delta_pathname(delta)
+    return delta.old_file[:path] unless delta.status == :renamed
+
+    return  "{#{delta.old_file[:path]} -> #{delta.new_file[:path]}}"
+  end
+
+  def delta_total(delta)
+
+
   end
 
   def diffstat_bar(diff)
@@ -103,13 +116,11 @@ module CommitHelper
 
   def to_html_line(line)
 
-    l = CGI.escapeHTML(line.line.force_encoding('utf-8'))
-    case line.mode
-    when :sep
-      "<div class='gc'>#{l}</div>"
-    when :add
+    l = CGI.escapeHTML(line.content.force_encoding('utf-8'))
+    case line.line_origin
+    when :addition
       "<div class='gi'>#{l}</div>"
-    when :del
+    when :deletion
       "<div class='gd'>#{l}</div>"
     else
       "<div>#{l}</div>"
