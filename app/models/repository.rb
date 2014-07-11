@@ -61,15 +61,16 @@ class Repository
     Commit.new(c, self) if c
   end
 
-  def commits(start = 'master', max_count = 10, skip = 0)
+  def commits(start = 'master', max_count = 100, skip = 0)
     i = 0
     res = []
     walker =  Rugged::Walker.new(repo)
     walker.push(start)
+    walker.sorting(Rugged::SORT_TOPO)
 
     walker.each {|c|
       i = i + 1
-      puts "#{i} : #{c.oid} #{c.message}"
+      # puts "#{i} : #{c.oid} #{c.message}"
       next  if i - 1 < skip
       break if res.length > max_count
       res << Commit.new(c, self)
@@ -78,12 +79,14 @@ class Repository
     return res
   end
 
-  def commits_between(from, to)
+  def commits_between(from, to, max_count = 100)
     res = []
     walker =  Rugged::Walker.new(repo)
     walker.push(from)
+    walker.sorting(Rugged::SORT_TOPO)
 
     walker.each {|c|
+      break if res.length > max_count
       res << Commit.new(c, self)
       break if c.oid == to
     }

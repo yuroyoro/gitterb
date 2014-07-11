@@ -15,6 +15,7 @@ class Tree
     end
 
     @commits = repo.commits(@target_branch_name, @max_count).reverse
+
     @commits_hash = @commits.inject({}){|h,c| h[c.id] = c;h}
     @commits.each{|c|
       parents = c.parent_commits.map{|p| @commits_hash[p.id]}.reject(&:nil?)
@@ -27,7 +28,7 @@ class Tree
       merge_base = @repo.repo.merge_base(@target_branch_name, b.name).chomp
       next unless @commits_hash[merge_base]
 
-      @repo.commits_between(merge_base, b.name).each{|c|
+      @repo.commits_between(merge_base, b.name, @max_count).each{|c|
         next if  @commits_hash[c.id]
         branches_commits[c.id] ||= c
       }

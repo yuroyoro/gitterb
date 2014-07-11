@@ -9,7 +9,7 @@
       branch:
       = select_tag(:branch , options_from_collection_for_select(@branches, :to_s, :to_s, @branch))
       all:
-      = check_box_tag(:all, true, @all)
+      = check_box_tag(:all, false, @all)
       max-count:
       = text_field_tag(:max_count, @max_count, :size => 3)
 
